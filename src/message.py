@@ -1,12 +1,17 @@
 # region Message
 
+from user import User
+
+
 class Message:
     """Stores message content and the message id"""
 
     ID = 1
 
-    def __init__(self, content: str):
+    def __init__(self, user_from: User, user_to: User, content: str):
         self.__id = str(Message.ID).zfill(6)
+        self.__user_from = user_from
+        self.__user_to = user_to
         self.__content = content
         Message.ID += 1
 
@@ -23,6 +28,14 @@ class Message:
     @content.setter
     def content(self, content):
         self.__content = content
+
+    @property
+    def user_to(self):
+        return self.__user_to
+
+    @property
+    def user_from(self):
+        return self.__user_from
 
     # endregion
 

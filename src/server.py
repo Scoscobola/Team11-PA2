@@ -1,4 +1,8 @@
 # region Server
+
+import socket
+from clientworker import ClientWorker
+
 class Server:
     """Server main thread"""
 
@@ -17,10 +21,30 @@ class Server:
     # region Methods
 
     def terminate_server(self):
-        pass
+        self.__keep_running = False
+        self.__server_socket.close()
 
     def run(self):
-        pass
+        self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__server_socket.bind((self.__ip, self.__port))
+        self.__server_socket.listen()
+
+        while self.__keep_running:
+            print(f"""[SRV] Waiting for a client connection""")
+            try:
+                self.__client_socket, client_address = self.__server_socket.accept()
+                self.__connection_count += 1
+                print(f"""[SRC] Got a connection from {client_address}""")
+                cw = ClientWorker(self.__connection_count, self.__client_socket, self.__database, self)
+                self.__list_of_cw.append(cw)
+                cw.start()
+            except Exception as e:
+                print(e)
+
+            cw: ClientWorker
+            for cw in self.__list_of_cw:
+                cw.terminate_connection()
+                cw.join()
 
     def load_from_file(self, filename: str):
         pass
