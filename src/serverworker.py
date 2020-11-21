@@ -12,6 +12,7 @@ class ServerWorker(Thread):
         super().__init__()
         self.__port = port_to_listen
         self.__server_socket = None
+        self.__client_socket = None
         self.__incoming_messages = []
         self.__keep_running = True
 
@@ -34,10 +35,10 @@ class ServerWorker(Thread):
     # region Methods
     def send_message(self, msg: str):
         self.display_message(f"""SEND>> {msg}""")
-        self.__server_socket.send(msg.encode("UTF-16"))
+        self.__client_socket.send(msg.encode("UTF-16"))
 
     def receive_message(self, max_length: int = 1024):
-        return self.__server_socket.recvmsg(max_length)[0].decode("UTF-16")
+        return self.__client_socket.recv(max_length)[0].decode("UTF-16")
 
     def display_message(self, msg: str):
         print(f"""CLIENT (BG) >> {msg}""")
@@ -67,7 +68,10 @@ class ServerWorker(Thread):
     def run(self):
         self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__server_socket.bind(("localhost", self.__port))
-        self.__server_socket.listen()
+        self.display_message("Listening for connections...")
+        self.__server_socket.listen(1)
+        self.__client_socket, client_address = self.__server_socket.accept()
+        self.display_message(f"""Got a connection from {client_address}""")
 
         while self.__keep_running:
             self.process_server_request()

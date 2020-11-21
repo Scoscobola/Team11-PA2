@@ -44,7 +44,7 @@ class Client:
         self.__is_connected = True
 
         #Generate a random port number and instatiate a background thread with a socket listening to the random port
-        random_port = random.randrange(10001, 10010)
+        random_port = random.randrange(10002, 10010)
         self.__server_worker = ServerWorker(random_port)
         self.__server_worker.start()
         self.send_message(f"""PORT|{str(random_port)}""")
@@ -58,7 +58,7 @@ class Client:
         self.__client_socket.send(msg.encode("UTF-16"))
 
     def receive_message(self):
-        return self.__client_socket.recvmsg(1024)[0].decode("UTF-16")
+        return self.__client_socket.recv(1024)[0].decode("UTF-16")
 
     def print_received(self):
         pass
@@ -92,6 +92,8 @@ if __name__ == "__main__":
     while keep_running:
         option = client.display_menu()
         if option == 1:
+            client.ip = input("IP Address>")
+            client.port = int(input("Port>"))
             client.connect()
             print(client.receive_message())
         else:
