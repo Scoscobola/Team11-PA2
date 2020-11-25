@@ -1,8 +1,12 @@
 # region Server
 
+#from clientworker import ClientWorker
+from threading import Thread
 import socket
-from clientworker import ClientWorker
 from database import Database
+from user import User
+from background_clientworker import BackgroundClientWorker
+
 
 class Server:
     """Server main thread"""
@@ -18,6 +22,18 @@ class Server:
         self.__database = Database()
         self.__list_of_cw = []
         self.__connection_count = 0
+
+    # region Getters and setters
+
+    @property
+    def database(self):
+        return self.__database
+
+    @property
+    def list_of_cw(self):
+        return self.__list_of_cw
+
+    # endregion
 
     # region Methods
 
@@ -35,8 +51,8 @@ class Server:
             try:
                 self.__client_socket, client_address = self.__server_socket.accept()
                 self.__connection_count += 1
-                print(f"""[SRC] Got a connection from {client_address}""")
-                cw = ClientWorker(self.__connection_count, self.__client_socket, self.__database)
+                print(f"""[SRV] Got a connection from {client_address}""")
+                cw = ClientWorker(self.__connection_count, self.__client_socket, self.__database, self)
                 self.__list_of_cw.append(cw)
                 cw.start()
             except Exception as e:
@@ -50,28 +66,180 @@ class Server:
     def load_from_file(self, filename: str):
         pass
 
-    def save_to_file(self, filname: str):
+    def save_to_file(self, filename: str):
         pass
 
     def display_menu(self):
         print("=" * 80)
         print(f"""{"Server Main Menu"}:^80""")
         print("=" * 80)
-        print("1. Load data from file")
-        print("2. Start messenger service")
-        print("3. Stop messenger service")
-        print("4. Save data to file")
+        print("1. Sign up user")
+        print("2. Load data from file")
+        print("3. Start messenger service")
+        print("5. Stop messenger service")
+        print("6. Save data to file")
         print("-" * 80)
-        return int(input("Select option [1-4]>"))
+        return int(input("Select option [1-6]>"))
 
     # endregion
 
 
 # endregion
 
+# region ClientWorker
+class ClientWorker(Thread):
+    """Threads that listen to client requests."""
+
+    def __init__(self, client_id: int, client_socket: socket, database: Database, server: Server):
+        super().__init__()
+        self.__id = client_id
+        self.__client_socket = client_socket
+        self.__database = database
+        self.__server = server
+        self.__user = None
+        self.__keep_running_client = True
+        self.__background_client_worker = None
+
+    # region Setters and Getters
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, client_id: int):
+        self.__id = client_id
+
+    @property
+    def client_socket(self):
+        return self.__client_socket
+
+    @client_socket.setter
+    def client_socket(self, client_socket: socket):
+        self.__client_socket = client_socket
+
+    @property
+    def database(self):
+        return self.__database
+
+    @database.setter
+    def database(self, database: Database):
+        self.__database = database
+
+    @property
+    def user(self):
+        return self.__user
+
+    @property
+    def server(self):
+        return self.__server
+
+    @server.setter
+    def server(self, server: Server):
+        self.__server = server
+
+    @user.setter
+    def user(self, user: User):
+        self.__user = user
+
+    @property
+    def keep_running_client(self):
+        return self.__keep_running_client
+
+    @keep_running_client.setter
+    def keep_running_client(self, state: bool):
+        self.__keep_running_client = state
+
+    # endregion
+
+    # region Methods
+
+    def sign_in_user(self, username: str, password: str):
+        user_to_sign_in = None
+        response = ""
+        user: User
+        cw: ClientWorker
+        signed_in = False
+        for user in self.__database.users:
+            if user.username is username and password is user.password:
+                for cw in self.__server.list_of_cw:
+                    if cw.user is user:
+                        response = "2|Already signed in."
+                        signed_in = True
+                        break
+                if not signed_in:
+                    self.__user = user
+                    self.display_message(f"Successfully signed in {self.__user.display_name}")
+                    response = "0|OK"
+            elif user.username is username and password is not user.password:
+                self.display_message("Incorrect password")
+                response = "1|Invalid Credentials"
+
+        if not self.__user:
+            self.display_message("That user doesn't exist")
+            response = "1|Invalid Credentials"
+
+        return response
+
+    def sign_out_user(self):
+        pass
+
+    def connect_to_client_background(self, port):
+        # print(f"""{str(self.__client_socket.getpeername()[0])}{port}""")
+        self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
+                                                                 port)
+        self.__background_client_worker.run()
+
+    def run(self):
+        self.display_message("Connected to Client. Attempting connection to client background thread")
+
+        while self.__keep_running_client:
+            self.process_client_request()
+
+        self.__client_socket.close()
+
+    def terminate_connection(self):
+        self.__keep_running_client = False
+        self.__client_socket.close()
+        # self.__server_socket.close()
+
+    def process_client_request(self):
+        client_message = self.receive_message()
+        self.display_message(f"""CLIENT SAID >> {client_message}""")
+
+        arguments = client_message.split("|")
+        response = ""
+
+        try:
+            if arguments[0] == "PORT":
+                # Need to figure out how to handle response here. The background clientworker may need to time out
+                # after a certain number of tries.
+                self.connect_to_client_background(int(arguments[1]))
+            if arguments[0] == "LOG":
+                response = self.sign_in_user(arguments[1], arguments[2])
+            else:
+                response = "ERR|Unknown Command."
+        except ValueError as ve:
+            response = "ERR|" + str(ve)
+
+        self.send_message(response)
+
+    def receive_message(self, max_length: int = 1024):
+        msg = self.__client_socket.recvmsg(max_length)[0].decode("UTF-16")
+        print(f"""RECV>> {msg}""")
+        return msg
+
+    def send_message(self, msg: str):
+        self.display_message(f"""SEND>> {msg}""")
+        self.__client_socket.send(msg.encode("UTF-16"))
+
+    def display_message(self, msg: str):
+        print(f"""CW >> {msg}""")
+
+    # endregion
+
+# endregion
 
 # region ServerApp
-
 
 if __name__ == "__main__":
     keep_running = True
@@ -79,9 +247,20 @@ if __name__ == "__main__":
 
     while keep_running:
         option = server.display_menu()
-        if option == 2:
+        if option == 1:
+            username = input("Enter a username>")
+            phone = input("Enter a phone number>")
+            password = input("Enter a password>")
+            if server.database.sign_up_user(username, password, phone):
+                print("Sign-up successful.")
+            else:
+                print("That user already exists")
+        if option == 3:
             server.run()
         else:
             print("Invalid option, try again \n\n")
 
+
 # endregion
+
+

@@ -41,7 +41,7 @@ class Database:
 
     # region Methods
 
-    def sign_up_user(self, username: str, password: str, display_name: str):
+    def sign_up_user(self, username: str, password: str, phone_number: str):
         """Checks to see that the username doesn't already exist and then adds the user to the database"""
         success = True
         for user in self.__users:
@@ -49,13 +49,13 @@ class Database:
                 success = False
                 break
         if success:
-            user_to_add = User(username, password, display_name)
+            user_to_add = User(username, password, phone_number)
             self.__users.append(user_to_add)
 
         return success
 
     def send_message(self, user_from: User, user_to: User, message: str):
-        """Checks that the user the message is being sent to exists then sends the message and returns a response."""
+        """Checks that the user the message is being sent to exists, then sends the message and returns a response."""
         success = 0
         response = ''
         if user_from not in self.__users:
@@ -73,7 +73,8 @@ class Database:
         return response
 
     def send_notification(self, user_from: User, user_to: User, message_id: str):
-        """Checks that the user the message is being sent to exists then sends the message and returns a response."""
+        """Checks that the user the notification is being sent to exists,
+        then sends the message and returns a response."""
         success = 0
         response = ''
         if user_from not in self.__users:

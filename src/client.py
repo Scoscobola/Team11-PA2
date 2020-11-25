@@ -14,6 +14,7 @@ class Client:
         self.__client_socket = None
         self.__server_worker = None
         self.__is_connected = False
+        self.__is_logged_in = False
 
     # region Getters and Setters
 
@@ -58,13 +59,25 @@ class Client:
         self.__client_socket.send(msg.encode("UTF-16"))
 
     def receive_message(self):
-        return self.__client_socket.recv(1024)[0].decode("UTF-16")
+        return self.__client_socket.recv(1024).decode("UTF-16")
 
     def print_received(self):
         pass
 
     def sign_in_user(self, username: str, password: str):
-        pass
+        username = input("Username>")
+        password = input("Password>")
+
+        self.send_message(f"LOG|{username}|{password}")
+        response = self.receive_message()
+        arguments = response.split("|")
+        if arguments[0] == "0":
+            print("Signed in successfully.")
+            self.__is_logged_in = True
+        elif arguments[0] == "1":
+            print("Invalid credentials.")
+        elif arguments[0] == "2":
+            print("Already Logged in.")
 
     def display_menu(self):
         print("=" * 80)
@@ -95,6 +108,11 @@ if __name__ == "__main__":
             client.ip = input("IP Address>")
             client.port = int(input("Port>"))
             client.connect()
+            print(client.receive_message())
+        elif option == 2:
+            username = input("Enter username>")
+            password = input("Enter password>")
+            client.sign_in_user(username, password)
             print(client.receive_message())
         else:
             print("Invalid option, try again \n\n")

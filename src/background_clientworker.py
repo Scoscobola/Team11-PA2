@@ -79,6 +79,7 @@ class BackgroundClientWorker(Thread):
             try:
                 self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.__server_socket.connect((str(self.__client_socket.getpeername()[0]), self.__port))
+                self.__client_socket.send("OK|".encode("UTF-16"))
                 break
             except socket.error:
                 print("Connection refused. Retrying...")
@@ -106,20 +107,23 @@ class BackgroundClientWorker(Thread):
             self.display_message(self.__database.send_notification(message_obj.user_from, message_obj.user_to,
                                                                    message_obj.id))
 
-        elif self.__database.outgoing_notifications[-1].user_from is self.__user:
+        if not list(self.__database.outgoing_notifications.queue):
+            self.display_message("Outgoing notification queue empty")
+            pass
+        elif list(self.__database.outgoing_notifications.queue)[-1].user_from is self.__user:
             message_obj = self.__database.outgoing_notifications.get()
             message = f"""OK|{message_obj.user_from}|{message_obj.user_to}|{message_obj.content}"""
             self.send_message(message)
             self.display_message(self.receive_message())
 
     def receive_message(self, max_length: int = 1024):
-        msg = self.__client_socket.recvmsg(max_length)[0].decode("UTF-16")
+        msg = self.__server_socket.recvmsg(max_length)[0].decode("UTF-16")
         print(f"""RECV (BG)>> {msg}""")
         return msg
 
     def send_message(self, msg: str):
         self.display_message(f"""SEND (BG)>> {msg}""")
-        self.__client_socket.send(msg.encode("UTF-16"))
+        self.__server_socket.send(msg.encode("UTF-16"))
 
     def display_message(self, msg: str):
         print(f"""BGCW >> {msg}""")
