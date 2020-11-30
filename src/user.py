@@ -38,4 +38,7 @@ class User:
     def __repr__(self):
         return f'USERNAME: {self.username}|PASSWORD: {self.password}|PHONE: {self.phone}'
 
+    def __eq__(self, other):
+        return self.username is other.username
+
 # endregion

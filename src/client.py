@@ -15,6 +15,7 @@ class Client:
         self.__server_worker = None
         self.__is_connected = False
         self.__is_logged_in = False
+        self.__username_of_user = None
 
     # region Getters and Setters
 
@@ -65,32 +66,53 @@ class Client:
         pass
 
     def sign_in_user(self):
-        sign_in_username = input("Username>")
-        sign_in_password = input("Password>")
+        if self.__is_connected:
+            sign_in_username = input("Username>")
+            sign_in_password = input("Password>")
 
-        self.send_message(f"LOG|{sign_in_username}|{sign_in_password}")
-        response = self.receive_message()
-        arguments = response.split("|")
-        if arguments[0] == "0":
-            print("Signed in successfully.")
-            self.__is_logged_in = True
-        elif arguments[0] == "1":
-            print("Invalid credentials.")
-        elif arguments[0] == "2":
-            print("Already Logged in.")
+            self.send_message(f"LOG|{sign_in_username}|{sign_in_password}")
+            response = self.receive_message()
+            arguments = response.split("|")
+            if arguments[0] == "0":
+                print("Signed in successfully.")
+                self.__is_logged_in = True
+                self.__username_of_user = sign_in_username
+            elif arguments[0] == "1":
+                print("Invalid credentials.")
+            elif arguments[0] == "2":
+                print("Already Logged in.")
+        else:
+            print("The client is not connected to a server!")
 
     def sign_up_user(self):
-        sign_up_username = input("Input username>")
-        sign_up_password = input("Input password>")
-        sign_up_phone = input("Input phone number>")
-        self.send_message(f"USR|{sign_up_username}|{sign_up_password}|{sign_up_phone}")
-        response = self.receive_message()
-        arguments = response.split("|")
-        if arguments[0] == "0":
-            print("User signed up successfully.")
-            self.__is_logged_in = True
-        elif arguments[0] == "1":
-            print(f"{arguments[1]}")
+        if self.__is_connected:
+            sign_up_username = input("Input username>")
+            sign_up_password = input("Input password>")
+            sign_up_phone = input("Input phone number>")
+            self.send_message(f"USR|{sign_up_username}|{sign_up_password}|{sign_up_phone}")
+            response = self.receive_message()
+            arguments = response.split("|")
+            if arguments[0] == "0":
+                print("User signed up successfully.")
+                self.__is_logged_in = True
+            elif arguments[0] == "1":
+                print(f"{arguments[1]}")
+        else:
+            print("The client is not connected to a server!")
+
+    def send_message_to_user(self):
+        if self.__is_connected and self.__is_logged_in:
+            username_to_send = input("Enter the username you want to send the message to>")
+            message = input("Your message>")
+            self.send_message(f"MSG|{self.__username_of_user}|{username_to_send}|{message}")
+            response = self.receive_message()
+            arguments = response.split("|")
+            if arguments[0] == "0":
+                print(f"Message {arguments[1]} sent successfully.")
+            elif arguments[0] == "1":
+                print("The user sending the message doesn't exist or is not the current user logged in.")
+            elif arguments[0] == "2":
+                print("The target user doesn't exist.")
 
     def display_menu(self):
         print("=" * 80)
@@ -130,6 +152,8 @@ if __name__ == "__main__":
                 client.sign_in_user()
             elif login_option == 2:
                 client.sign_up_user()
+        elif option == 3:
+            client.send_message_to_user()
         else:
             print("Invalid option, try again \n\n")
 

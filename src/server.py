@@ -232,6 +232,8 @@ class ClientWorker(Thread):
                 response = self.sign_in_user(arguments[1], arguments[2])
             elif arguments[0] == "USR":
                 response = self.database.sign_up_user(arguments[1], arguments[2], arguments[3])
+            elif arguments[0] == "MSG":
+                response = self.database.send_message(arguments[1], arguments[2], arguments[3])
             else:
                 response = "ERR|Unknown Command."
         except ValueError as ve:

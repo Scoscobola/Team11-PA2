@@ -59,26 +59,40 @@ class Database:
             self.__users.append(user_to_add)
             response = "OK"
 
+        print("List of users:")
+        for user in self.__users:
+            print(user)
         return response
 
-    def send_message(self, user_from: User, user_to: User, message: str):
+    def send_message(self, name_from: str, name_to: str, message: str):
         """Checks that the user the message is being sent to exists, then sends the message and returns a response."""
-        success = 0
+        user_from_found = False
+        user_to_found = False
+        user_obj_from = None
+        user_obj_to = None
         response = ''
         # check that the user sending the message exists.
-        if user_from not in self.__users:
-            success = 1
-            response = f"""{success}|no source user"""
+        for user in self.__users:
+            if name_from == user.username:
+                user_from_found = True
+                user_obj_from = user
+                break
+            else:
+                response = f"""1|no source user"""
         # and that the user to exists
-        elif user_to not in self.__users:
-            success = 2
-            response = f"""{success}|no target user"""
+        for user in self.__users:
+            if name_to == user.username:
+                user_to_found = True
+                user_obj_to = user
+                break
+            else:
+                response = f"""2|no target user"""
 
         # if both users exist, put this message into the outgoing message queue
-        if success == 0:
-            message_to_send = Message(user_from, user_to, message)
+        if user_to_found and user_from_found:
+            message_to_send = Message(user_obj_from, user_obj_to, message)
             self.__outgoing_messages.put(message_to_send)
-            response = f"""{success}|{message_to_send.id}"""
+            response = f"""0|{message_to_send.id}"""
 
         return response
 
