@@ -3,10 +3,10 @@
 class User:
     """Stores user data"""
 
-    def __init__(self, username: str, password: str, display_name: str):
+    def __init__(self, username: str, password: str, phone: str):
         self.__username = username
         self.__password = password
-        self.__display_name = display_name
+        self.__display_name = phone
 
     #region Getters and Setters
 
@@ -19,12 +19,12 @@ class User:
         self.__username = username
 
     @property
-    def display_name(self):
-        return self.__display_name
+    def phone(self):
+        return self.__phone
 
-    @display_name.setter
-    def display_name(self, display_name: str):
-        self.__display_name = display_name
+    @phone.setter
+    def phone(self, phone: str):
+        self.__phone = phone
 
     @property
     def password(self):

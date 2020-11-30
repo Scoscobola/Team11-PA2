@@ -10,6 +10,8 @@ class Database:
     def __init__(self, users=None, outgoing_messages=None, outgoing_notifications=None):
         if users is None:
             self.__users = []
+            admin = User("admin", "admin", "1")
+            self.__users.append(admin)
         else:
             self.__users = users
 

@@ -8,10 +8,11 @@ from user import User
 from background_clientworker import BackgroundClientWorker
 
 
-class Server:
+class Server(Thread):
     """Server main thread"""
 
     def __init__(self, ip: str, port: int, backlog: int):
+        super().__init__()
         self.__ip = ip
         self.__port = port
         self.__backlog = backlog
@@ -22,7 +23,6 @@ class Server:
         self.__database = Database()
         self.__list_of_cw = []
         self.__connection_count = 0
-        self.database.sign_up_user("admin", "admin", "1")
 
     # region Getters and setters
 
@@ -33,6 +33,14 @@ class Server:
     @property
     def list_of_cw(self):
         return self.__list_of_cw
+
+    @property
+    def keep_running(self):
+        return self.__keep_running
+
+    @keep_running.setter
+    def keep_running(self, status: bool):
+        self.__keep_running = status
 
     # endregion
 
@@ -256,8 +264,13 @@ if __name__ == "__main__":
     while keep_running:
         option = server.display_menu()
         if option == 2:
-            server.run()
+            server.start()
+        elif option == 3:
+            server.terminate_server()
+            server.join()
+            keep_running = False
         else:
             print("Invalid option, try again \n\n")
+
 
 # endregion
