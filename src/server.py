@@ -169,7 +169,7 @@ class ClientWorker(Thread):
         signed_in = False
         # search for user where the username and password match
         for user in self.__database.users:
-            if user.username is username and password is user.password:
+            if user.username == username: # and user.password == password:
                 # then search thru the list of connected clients to make sure the user isn't already signed in
                 for cw in self.__server.list_of_cw:
                     if cw.user is user:
@@ -179,16 +179,16 @@ class ClientWorker(Thread):
                 # if the user isn't already signed in...
                 if not signed_in:
                     self.__user = user
-                    self.display_message(f"Successfully signed in {self.__user.display_name}")
+                    self.display_message(f"Successfully signed in {self.__user.username}")
                     response = "0|OK"
             # if the user name matches but the password doesn't...
-            elif user.username is username and password is not user.password:
+            elif user.username is username: # and password is not user.password:
                 self.display_message("Incorrect password")
                 response = "1|Invalid Credentials"
         # if the user isn't found...
         if not self.__user:
             self.display_message("That user doesn't exist")
-            response = "1|Invalid Credentials"
+            response = "1|That user doesn't exist."
 
         return response
 
@@ -203,7 +203,8 @@ class ClientWorker(Thread):
 
     def run(self):
         self.display_message("Connected to Client. Attempting connection to client background thread")
-
+        for user in self.__database.users:
+            print(user)
         while self.__keep_running_client:
             self.process_client_request()
 

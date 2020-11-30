@@ -1,4 +1,4 @@
-#region User
+# region User
 
 class User:
     """Stores user data"""
@@ -6,9 +6,9 @@ class User:
     def __init__(self, username: str, password: str, phone: str):
         self.__username = username
         self.__password = password
-        self.__display_name = phone
+        self.__phone = phone
 
-    #region Getters and Setters
+    # region Getters and Setters
 
     @property
     def username(self):
@@ -30,6 +30,12 @@ class User:
     def password(self):
         return self.__password
 
-    #endregion
+    # endregion
 
-#endregion
+    def __str__(self):
+        return f'USERNAME: {self.username}|PASSWORD: {self.password}|PHONE: {self.phone}'
+
+    def __repr__(self):
+        return f'USERNAME: {self.username}|PASSWORD: {self.password}|PHONE: {self.phone}'
+
+# endregion
