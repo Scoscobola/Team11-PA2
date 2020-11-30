@@ -23,8 +23,8 @@ class ServerWorker(Thread):
         return self.__server_socket
 
     @server_socket.setter
-    def server_socket(self, client_socket: socket):
-        self.__server_socket = client_socket
+    def server_socket(self, server_socket: socket):
+        self.__server_socket = server_socket
 
     @property
     def incoming_messages(self):

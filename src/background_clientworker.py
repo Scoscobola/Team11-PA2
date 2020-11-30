@@ -79,11 +79,11 @@ class BackgroundClientWorker(Thread):
             try:
                 self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.__server_socket.connect((str(self.__client_socket.getpeername()[0]), self.__port))
-                self.__client_socket.send("OK|".encode("UTF-16"))
+                #self.__client_socket.send("OK|".encode("UTF-16"))
                 break
-            except socket.error:
+            except socket.error as se:
                 print("Connection refused. Retrying...")
-                time.sleep(1)
+                time.sleep(5)
 
         while self.__keep_running_client:
             self.check_for_messages()
@@ -97,7 +97,7 @@ class BackgroundClientWorker(Thread):
 
     def check_for_messages(self):
         if not list(self.__database.outgoing_messages.queue):
-            self.display_message("Outgoing Messages queue empty.")
+            #self.display_message("Outgoing Messages queue empty.")
             pass
         elif list(self.__database.outgoing_messages.queue)[-1].user_to is self.__user:
             message_obj = self.__database.outgoing_messages.get()
@@ -108,7 +108,7 @@ class BackgroundClientWorker(Thread):
                                                                    message_obj.id))
 
         if not list(self.__database.outgoing_notifications.queue):
-            self.display_message("Outgoing notification queue empty")
+            #self.display_message("Outgoing notification queue empty")
             pass
         elif list(self.__database.outgoing_notifications.queue)[-1].user_from is self.__user:
             message_obj = self.__database.outgoing_notifications.get()

@@ -1,6 +1,6 @@
 # region Server
 
-#from clientworker import ClientWorker
+# from clientworker import ClientWorker
 from threading import Thread
 import socket
 from database import Database
@@ -22,6 +22,7 @@ class Server:
         self.__database = Database()
         self.__list_of_cw = []
         self.__connection_count = 0
+        self.database.sign_up_user("admin", "admin", "1")
 
     # region Getters and setters
 
@@ -73,13 +74,12 @@ class Server:
         print("=" * 80)
         print(f"""{"Server Main Menu"}:^80""")
         print("=" * 80)
-        print("1. Sign up user")
-        print("2. Load data from file")
-        print("3. Start messenger service")
-        print("5. Stop messenger service")
-        print("6. Save data to file")
+        print("1. Load data from file")
+        print("2. Start messenger service")
+        print("3. Stop messenger service")
+        print("4. Save data to file")
         print("-" * 80)
-        return int(input("Select option [1-6]>"))
+        return int(input("Select option [1-4]>"))
 
     # endregion
 
@@ -159,21 +159,25 @@ class ClientWorker(Thread):
         user: User
         cw: ClientWorker
         signed_in = False
+        # search for user where the username and password match
         for user in self.__database.users:
             if user.username is username and password is user.password:
+                # then search thru the list of connected clients to make sure the user isn't already signed in
                 for cw in self.__server.list_of_cw:
                     if cw.user is user:
                         response = "2|Already signed in."
                         signed_in = True
                         break
+                # if the user isn't already signed in...
                 if not signed_in:
                     self.__user = user
                     self.display_message(f"Successfully signed in {self.__user.display_name}")
                     response = "0|OK"
+            # if the user name matches but the password doesn't...
             elif user.username is username and password is not user.password:
                 self.display_message("Incorrect password")
                 response = "1|Invalid Credentials"
-
+        # if the user isn't found...
         if not self.__user:
             self.display_message("That user doesn't exist")
             response = "1|Invalid Credentials"
@@ -187,7 +191,7 @@ class ClientWorker(Thread):
         # print(f"""{str(self.__client_socket.getpeername()[0])}{port}""")
         self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
                                                                  port)
-        self.__background_client_worker.run()
+        self.__background_client_worker.start()
 
     def run(self):
         self.display_message("Connected to Client. Attempting connection to client background thread")
@@ -214,8 +218,11 @@ class ClientWorker(Thread):
                 # Need to figure out how to handle response here. The background clientworker may need to time out
                 # after a certain number of tries.
                 self.connect_to_client_background(int(arguments[1]))
-            if arguments[0] == "LOG":
+                response = "OK"
+            elif arguments[0] == "LOG":
                 response = self.sign_in_user(arguments[1], arguments[2])
+            elif arguments[0] == "USR":
+                response = self.database.sign_up_user(arguments[1], arguments[2], arguments[3])
             else:
                 response = "ERR|Unknown Command."
         except ValueError as ve:
@@ -237,6 +244,7 @@ class ClientWorker(Thread):
 
     # endregion
 
+
 # endregion
 
 # region ServerApp
@@ -247,20 +255,9 @@ if __name__ == "__main__":
 
     while keep_running:
         option = server.display_menu()
-        if option == 1:
-            username = input("Enter a username>")
-            phone = input("Enter a phone number>")
-            password = input("Enter a password>")
-            if server.database.sign_up_user(username, password, phone):
-                print("Sign-up successful.")
-            else:
-                print("That user already exists")
-        if option == 3:
+        if option == 2:
             server.run()
         else:
             print("Invalid option, try again \n\n")
 
-
 # endregion
-
-

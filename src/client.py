@@ -64,11 +64,11 @@ class Client:
     def print_received(self):
         pass
 
-    def sign_in_user(self, username: str, password: str):
-        username = input("Username>")
-        password = input("Password>")
+    def sign_in_user(self):
+        sign_in_username = input("Username>")
+        sign_in_password = input("Password>")
 
-        self.send_message(f"LOG|{username}|{password}")
+        self.send_message(f"LOG|{sign_in_username}|{sign_in_password}")
         response = self.receive_message()
         arguments = response.split("|")
         if arguments[0] == "0":
@@ -78,6 +78,19 @@ class Client:
             print("Invalid credentials.")
         elif arguments[0] == "2":
             print("Already Logged in.")
+
+    def sign_up_user(self):
+        sign_up_username = input("Input username>")
+        sign_up_password = input("Input password>")
+        sign_up_phone = input("Input phone number>")
+        self.send_message(f"USR|{sign_up_username}|{sign_up_password}|{sign_up_phone}")
+        response = self.receive_message()
+        arguments = response.split("|")
+        if arguments[0] == "0":
+            print("User signed up successfully.")
+            self.__is_logged_in = True
+        elif arguments[0] == "1":
+            print(f"{arguments[1]}")
 
     def display_menu(self):
         print("=" * 80)
@@ -110,10 +123,13 @@ if __name__ == "__main__":
             client.connect()
             print(client.receive_message())
         elif option == 2:
-            username = input("Enter username>")
-            password = input("Enter password>")
-            client.sign_in_user(username, password)
-            print(client.receive_message())
+            print("1. Login existing user.")
+            print("2. Sign up new user.")
+            login_option = int(input("Select option [1-2]>"))
+            if login_option == 1:
+                client.sign_in_user()
+            elif login_option == 2:
+                client.sign_up_user()
         else:
             print("Invalid option, try again \n\n")
 
