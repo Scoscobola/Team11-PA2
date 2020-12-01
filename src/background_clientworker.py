@@ -80,13 +80,15 @@ class BackgroundClientWorker(Thread):
                 self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.__server_socket.connect((str(self.__client_socket.getpeername()[0]), self.__port))
                 #self.__client_socket.send("OK|".encode("UTF-16"))
+                self.display_message("Successfully connected to client's server worker.")
                 break
             except socket.error as se:
                 print("Connection refused. Retrying...")
-                time.sleep(5)
+                time.sleep(2)
 
         while self.__keep_running_client:
             self.check_for_messages()
+            time.sleep(5)
 
         self.__client_socket.close()
 
@@ -96,6 +98,8 @@ class BackgroundClientWorker(Thread):
         self.__server_socket.close()
 
     def check_for_messages(self):
+        print("# of Outgoing messages:")
+        print(len(list(self.__database.outgoing_messages.queue)))
         if not list(self.__database.outgoing_messages.queue):
             #self.display_message("Outgoing Messages queue empty.")
             pass
@@ -104,9 +108,11 @@ class BackgroundClientWorker(Thread):
             message = f"""R|{message_obj.user_from}|{message_obj.id}|{message_obj.content}"""
             self.send_message(message)
             self.display_message(self.receive_message())
-            self.display_message(self.__database.send_notification(message_obj.user_from, message_obj.user_to,
-                                                                   message_obj.id))
+            # self.display_message(self.__database.send_notification(message_obj.user_from, message_obj.user_to,
+                                                                   # message_obj.id))
 
+        print("# of Outgoing notifications:")
+        print(len(list(self.__database.outgoing_notifications.queue)))
         if not list(self.__database.outgoing_notifications.queue):
             #self.display_message("Outgoing notification queue empty")
             pass
@@ -117,7 +123,7 @@ class BackgroundClientWorker(Thread):
             self.display_message(self.receive_message())
 
     def receive_message(self, max_length: int = 1024):
-        msg = self.__server_socket.recvmsg(max_length)[0].decode("UTF-16")
+        msg = self.__server_socket.recv(max_length).decode("UTF-16")
         print(f"""RECV (BG)>> {msg}""")
         return msg
 

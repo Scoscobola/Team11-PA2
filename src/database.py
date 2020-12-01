@@ -37,7 +37,7 @@ class Database:
 
     @property
     def outgoing_notifications(self):
-        return self.__outgoing_messages
+        return self.__outgoing_notifications
 
     # endregion
 
@@ -51,13 +51,13 @@ class Database:
         for user in self.__users:
             if username is user.username:
                 success = False
-                response = "A user with this username already exists."
+                response = "1|A user with this username already exists."
                 break
         # if we didn't already find a user, create a new user and add it to the list.
         if success:
             user_to_add = User(username, password, phone_number)
             self.__users.append(user_to_add)
-            response = "OK"
+            response = "0|OK"
 
         print("List of users:")
         for user in self.__users:

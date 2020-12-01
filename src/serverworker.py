@@ -38,7 +38,7 @@ class ServerWorker(Thread):
         self.__client_socket.send(msg.encode("UTF-16"))
 
     def receive_message(self, max_length: int = 1024):
-        return self.__client_socket.recv(max_length)[0].decode("UTF-16")
+        return self.__client_socket.recv(max_length).decode("UTF-16")
 
     def display_message(self, msg: str):
         print(f"""CLIENT (BG) >> {msg}""")

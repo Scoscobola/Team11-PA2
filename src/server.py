@@ -169,7 +169,7 @@ class ClientWorker(Thread):
         signed_in = False
         # search for user where the username and password match
         for user in self.__database.users:
-            if user.username == username: # and user.password == password:
+            if user.username == username and user.password == password:
                 # then search thru the list of connected clients to make sure the user isn't already signed in
                 for cw in self.__server.list_of_cw:
                     if cw.user is user:
@@ -179,10 +179,11 @@ class ClientWorker(Thread):
                 # if the user isn't already signed in...
                 if not signed_in:
                     self.__user = user
+                    self.__background_client_worker.user = user
                     self.display_message(f"Successfully signed in {self.__user.username}")
                     response = "0|OK"
             # if the user name matches but the password doesn't...
-            elif user.username is username: # and password is not user.password:
+            elif user.username is username and password is not user.password:
                 self.display_message("Incorrect password")
                 response = "1|Invalid Credentials"
         # if the user isn't found...
@@ -242,7 +243,7 @@ class ClientWorker(Thread):
         self.send_message(response)
 
     def receive_message(self, max_length: int = 1024):
-        msg = self.__client_socket.recvmsg(max_length)[0].decode("UTF-16")
+        msg = self.__client_socket.recv(max_length).decode("UTF-16")
         print(f"""RECV>> {msg}""")
         return msg
 

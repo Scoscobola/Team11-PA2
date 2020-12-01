@@ -46,10 +46,10 @@ class Client:
         self.__is_connected = True
 
         #Generate a random port number and instatiate a background thread with a socket listening to the random port
-        random_port = random.randrange(10002, 10010)
-        self.__server_worker = ServerWorker(random_port)
+        port = int(input("Please enter a port for the server to connect to>"))
+        self.__server_worker = ServerWorker(port)
         self.__server_worker.start()
-        self.send_message(f"""PORT|{str(random_port)}""")
+        self.send_message(f"""PORT|{str(port)}""")
 
     def disconnect(self):
         self.__client_socket.close()
