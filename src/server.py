@@ -7,6 +7,8 @@ from database import Database
 from user import User
 from background_clientworker import BackgroundClientWorker
 import json
+import queue
+from message import Message
 
 
 class Server(Thread):
@@ -73,8 +75,40 @@ class Server(Thread):
             cw.terminate_connection()
             cw.join()
 
-    def load_from_file(self, filename: str):
-        pass
+    def load_from_file(self):
+        filename = input("Enter the name of the file you'd like to load (no file extension)>")
+        with open(f"{filename}.json", "r") as database_file:
+            database_dict = json.load(database_file)
+
+        users_list = []
+        for user_dict in database_dict["user_dict"]:
+            user = User(user_dict.get("_User__username"), user_dict.get("_User__password"),
+                        user_dict.get("_User__phone"))
+            users_list.append(user)
+
+        messages_queue = queue.Queue
+        for message_dict in database_dict["messages_dict"]:
+            user_from_dict = message_dict["_Message__user_from"]
+            user_to_dict = message_dict["_Message__user_to"]
+            user_from = User(user_from_dict.get("_User__username"), user_from_dict.get("_User__password"),
+                             user_from_dict.get("_User__phone"))
+            user_to = User(user_to_dict.get("_User__username"), user_to_dict.get("_User__password"),
+                           user_to_dict.get("_User__phone"))
+            message_to_put = Message(user_from, user_to, message_dict.get("_Message__content"))
+            messages_queue.put(message_to_put)
+
+        notification_queue = queue.Queue
+        for notification_dict in database_dict["notifications_dict"]:
+            user_from_dict = notification_dict["_Message__user_from"]
+            user_to_dict = notification_dict["_Message__user_to"]
+            user_from = User(user_from_dict.get("_User__username"), user_from_dict.get("_User__password"),
+                             user_from_dict.get("_User__phone"))
+            user_to = User(user_to_dict.get("_User__username"), user_to_dict.get("_User__password"),
+                           user_to_dict.get("_User__phone"))
+            message_to_put = Message(user_from, user_to, notification_dict.get("_Message__content"))
+            messages_queue.put(message_to_put)
+
+        self.__database = Database(users_list, messages_queue, notification_queue)
 
     def save_to_file(self):
         database_dict = {"user_dict": [], "messages_dict": [], "notifications_dict": []}
@@ -294,7 +328,9 @@ if __name__ == "__main__":
 
     while keep_running:
         option = server.display_menu()
-        if option == 2:
+        if option == 1:
+            server.load_from_file()
+        elif option == 2:
             server.start()
         elif option == 3:
             server.terminate_server()
