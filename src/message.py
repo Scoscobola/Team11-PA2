@@ -45,6 +45,9 @@ class Message:
     def reset_id_numbering(cls):
         cls.ID = 1
 
+    def __str__(self):
+        return f"""FROM:{self.__user_from.username}\nMSG:{self.__content}"""
+
     def __repr__(self):
         return f"""FROM: {self.__user_from.username}|TO: {self.__user_to.username}|MSG: {self.__content}"""
 

@@ -74,7 +74,11 @@ class Client:
         return self.__client_socket.recv(1024).decode("UTF-16")
 
     def print_received(self):
-        pass
+        if self.__server_worker.incoming_messages:
+            for message in self.__server_worker.incoming_messages:
+                print(message + "\n")
+        else:
+            print("No new messages.")
 
     def sign_in_user(self):
         if self.__is_connected:
@@ -165,6 +169,8 @@ if __name__ == "__main__":
                 client.sign_up_user()
         elif option == 3:
             client.send_message_to_user()
+        elif option == 4:
+            client.print_received()
         elif option == 5:
             client.disconnect()
             keep_running = False

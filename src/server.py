@@ -6,6 +6,7 @@ import socket
 from database import Database
 from user import User
 from background_clientworker import BackgroundClientWorker
+import json
 
 
 class Server(Thread):
@@ -75,8 +76,26 @@ class Server(Thread):
     def load_from_file(self, filename: str):
         pass
 
-    def save_to_file(self, filename: str):
-        pass
+    def save_to_file(self):
+        database_dict = {"user_dict": [], "messages_dict": [], "notifications_dict": []}
+        for user in self.__database.users:
+            serialized_user = user.__dict__
+            database_dict["user_dict"].append(serialized_user)
+        for message in list(self.__database.outgoing_messages.queue):
+            serialized_message = {"id": message.id, "user_to": {message.user_to.__dict__},
+                                  "user_from": {message.user_from.__dict__}, "content": message.content}
+            database_dict["messages_dict"].append(serialized_message)
+        for notification in list(self.__database.outgoing_notifications.queue):
+            serialized_notification = {"id": notification.id, "user_to": {notification.user_to.__dict__},
+                                       "user_from": {notification.user_from.__dict__}, "content": notification.content}
+            database_dict["messages_dict"].append(serialized_notification)
+
+        filename = input("Name the file you want to save the database to (no file extension)>")
+        try:
+            with open(f'{filename}.json', 'w') as database_file:
+                json.dump(database_dict, database_file)
+        except Exception as e:
+            print(e)
 
     def display_menu(self):
         print("=" * 80)
@@ -198,8 +217,8 @@ class ClientWorker(Thread):
 
     def connect_to_client_background(self, port):
         # print(f"""{str(self.__client_socket.getpeername()[0])}{port}""")
-        #self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
-                                                                 #port)
+        # self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
+        # port)
         self.__background_client_worker.client_socket = self.__client_socket
         self.__background_client_worker.database = self.__database
         self.__background_client_worker.port = port
@@ -221,7 +240,6 @@ class ClientWorker(Thread):
         self.__keep_running_client = False
         self.__background_client_worker.terminate_connection()
         return "0|OK"
-
 
     def process_client_request(self):
         client_message = self.receive_message()
@@ -282,10 +300,11 @@ if __name__ == "__main__":
             server.terminate_server()
             server.join()
             keep_running = False
+        elif option == 4:
+            server.save_to_file()
         elif option == 9:
             print(len(server.list_of_cw))
         else:
             print("Invalid option, try again \n\n")
-
 
 # endregion
