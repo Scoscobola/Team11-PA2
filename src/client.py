@@ -52,9 +52,20 @@ class Client:
         self.send_message(f"""PORT|{str(port)}""")
 
     def disconnect(self):
-        self.__client_socket.close()
-        self.__server_worker.terminate_connection()
+        self.send_message("OUT|OK")
+        response = self.receive_message()
+        arguments = response.split("|")
+        if arguments[0] == "0":
+            print(f"{arguments[0]}|{arguments[1]}")
+        elif arguments[0] == "1":
+            print(arguments[1])
+        try:
+            self.__client_socket.close()
+            self.__server_worker.terminate_connection()
+        except socket.error as se:
+            print(f"0|{se}")
         self.__is_connected = False
+        self.__is_logged_in = False
 
     def send_message(self, msg: str):
         self.__client_socket.send(msg.encode("UTF-16"))
@@ -154,6 +165,8 @@ if __name__ == "__main__":
                 client.sign_up_user()
         elif option == 3:
             client.send_message_to_user()
+        elif option == 5:
+            client.disconnect()
         else:
             print("Invalid option, try again \n\n")
 

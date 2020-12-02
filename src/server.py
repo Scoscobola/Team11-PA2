@@ -106,7 +106,7 @@ class ClientWorker(Thread):
         self.__server = server
         self.__user = None
         self.__keep_running_client = True
-        self.__background_client_worker = None
+        self.__background_client_worker = BackgroundClientWorker()
 
     # region Setters and Getters
     @property
@@ -198,8 +198,11 @@ class ClientWorker(Thread):
 
     def connect_to_client_background(self, port):
         # print(f"""{str(self.__client_socket.getpeername()[0])}{port}""")
-        self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
-                                                                 port)
+        #self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
+                                                                 #port)
+        self.__background_client_worker.client_socket = self.__client_socket
+        self.__background_client_worker.database = self.__database
+        self.__background_client_worker.port = port
         self.__background_client_worker.start()
 
     def run(self):
@@ -210,11 +213,15 @@ class ClientWorker(Thread):
             self.process_client_request()
 
         self.__client_socket.close()
+        for client in self.__server.list_of_cw:
+            if client.id == self.__id:
+                self.__server.list_of_cw.remove(client)
 
     def terminate_connection(self):
         self.__keep_running_client = False
-        self.__client_socket.close()
-        # self.__server_socket.close()
+        self.__background_client_worker.terminate_connection()
+        return "0|OK"
+
 
     def process_client_request(self):
         client_message = self.receive_message()
@@ -235,6 +242,8 @@ class ClientWorker(Thread):
                 response = self.database.sign_up_user(arguments[1], arguments[2], arguments[3])
             elif arguments[0] == "MSG":
                 response = self.database.send_message(arguments[1], arguments[2], arguments[3])
+            elif arguments[0] == "OUT":
+                response = self.terminate_connection()
             else:
                 response = "ERR|Unknown Command."
         except ValueError as ve:
@@ -273,6 +282,8 @@ if __name__ == "__main__":
             server.terminate_server()
             server.join()
             keep_running = False
+        elif option == 9:
+            print(len(server.list_of_cw))
         else:
             print("Invalid option, try again \n\n")
 

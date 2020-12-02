@@ -76,11 +76,10 @@ class ServerWorker(Thread):
         while self.__keep_running:
             self.process_server_request()
 
-        self.__server_socket.close()
+        self.__client_socket.close()
 
     def terminate_connection(self):
         self.__keep_running = False
-        self.__server_socket.close()
 
     # endregion
 
