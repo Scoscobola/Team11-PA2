@@ -101,6 +101,7 @@ class BackgroundClientWorker(Thread):
 
     def terminate_connection(self):
         self.__keep_running_client = False
+        self.send_message("OUT|OK")
 
     def check_for_messages(self):
         if not list(self.__database.outgoing_messages.queue):

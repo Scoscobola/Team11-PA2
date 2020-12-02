@@ -45,7 +45,7 @@ class ServerWorker(Thread):
 
     def process_server_request(self):
         server_message = self.receive_message()
-        self.display_message(f"""SERVER SAID >>> {server_message}""")
+        self.display_message(f"""SERVER SAID >>>{server_message}""")
 
         arguments = server_message.split("|")
         response = ""
@@ -58,6 +58,8 @@ class ServerWorker(Thread):
             elif arguments[0] == "OK":
                 response = "0|OK"
                 self.display_message(f"Message {arguments[3]} successfully received by {arguments[2]}.")
+            elif arguments[0] == "OUT":
+                self.terminate_connection()
             else:
                 response = "1|ERR"
         except ValueError as ve:

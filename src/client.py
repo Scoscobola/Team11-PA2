@@ -56,12 +56,12 @@ class Client:
         response = self.receive_message()
         arguments = response.split("|")
         if arguments[0] == "0":
-            print(f"{arguments[0]}|{arguments[1]}")
+            print(f"\n{arguments[0]}|{arguments[1]}")
         elif arguments[0] == "1":
             print(arguments[1])
         try:
             self.__client_socket.close()
-            self.__server_worker.terminate_connection()
+            # self.__server_worker.terminate_connection()
         except socket.error as se:
             print(f"0|{se}")
         self.__is_connected = False
@@ -167,6 +167,7 @@ if __name__ == "__main__":
             client.send_message_to_user()
         elif option == 5:
             client.disconnect()
+            keep_running = False
         else:
             print("Invalid option, try again \n\n")
 
