@@ -35,17 +35,21 @@ class Client:
     def port(self, port: int):
         self.__port = port
 
+    @property
+    def username_of_user(self):
+        return self.__username_of_user
+
     # endregion
 
     # region Methods
 
     def connect(self):
-        #Connect to the server
+        # Connect to the server
         self.__client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__client_socket.connect((self.__ip, self.__port))
         self.__is_connected = True
 
-        #Generate a random port number and instatiate a background thread with a socket listening to the random port
+        # xGenerate a random port number and instatiate a background thread with a socket listening to the random port
         port = int(input("Please enter a port for the server to connect to>"))
         self.__server_worker = ServerWorker(port)
         self.__server_worker.start()
@@ -119,7 +123,7 @@ class Client:
         if self.__is_connected and self.__is_logged_in:
             username_to_send = input("Enter the username you want to send the message to>")
             message = input("Your message>")
-            self.send_message(f"MSG|{self.__username_of_user}|{username_to_send}|{message}")
+            self.send_message(f"MSG|{self.username_of_user}|{username_to_send}|{message}")
             response = self.receive_message()
             arguments = response.split("|")
             if arguments[0] == "0":

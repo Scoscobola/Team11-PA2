@@ -77,8 +77,12 @@ class Server(Thread):
 
     def load_from_file(self):
         filename = input("Enter the name of the file you'd like to load (no file extension)>")
-        with open(f"{filename}.json", "r") as database_file:
-            database_dict = json.load(database_file)
+        try:
+            with open(f"{filename}.json", "r") as database_file:
+                database_dict = json.load(database_file)
+        except FileNotFoundError as fe:
+            print(fe)
+            return
 
         users_list = []
         for user_dict in database_dict["user_dict"]:
