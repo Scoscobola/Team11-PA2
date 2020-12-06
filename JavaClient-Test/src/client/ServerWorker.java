@@ -32,6 +32,8 @@ public class ServerWorker implements Runnable {
     public boolean getKeepRunningClient(){return this.keepRunningClient;}
     public void setKeepRunningClient(Boolean state){this.keepRunningClient = state;}
 
+    public ArrayList<String> getIncomingMessages(){return this.incomingMessages;}
+
 
     //endregion
 
@@ -98,8 +100,33 @@ public class ServerWorker implements Runnable {
         System.out.printf("Client (BG) >> %s%n", msg);
     }
 
-    private void terminateConnection() {
+    public void terminateConnection() {
         this.keepRunningClient = false;
+
+        try{
+            this.inputStream.close();
+        }
+        catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+        try{
+            this.outputStream.close();
+        }
+        catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+        try{
+            this.serverConnection.close();
+        }
+        catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+        try{
+            this.serverSocket.close();
+        }
+        catch (IOException ioe){
+            ioe.printStackTrace();
+        }
     }
 
     //endregion

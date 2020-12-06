@@ -4,12 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class User implements Serializable {
+public class User {
     //attributes
     private String displayName;
     private int phone;
     private String password;
-    private boolean admin;
 
     //constructors
     public User(String displayName, String password, int phone)
@@ -40,12 +39,6 @@ public class User implements Serializable {
     }
     public String getPassword() {return this.password;}
 
-    public boolean isAdmin() {
-        return admin;
-    }
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
 
 
     @Override
