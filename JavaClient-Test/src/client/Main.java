@@ -26,10 +26,7 @@ public class Main extends Application {
         screenController = new ScreenController(primaryStage.getScene());
         screenController.addScreen("ServerConnect", FXMLLoader.load(getClass().getResource("clientConnect.fxml")));
         screenController.addScreen("ClientLogin", FXMLLoader.load(getClass().getResource("clientLogin.fxml")));
-        //screenController.addScreen("ClientMenu", FXMLLoader.load(getClass().getResource("clientMenu.fxml")));
+        screenController.addScreen("ClientMenu", FXMLLoader.load(getClass().getResource("clientMenu.fxml")));
         primaryStage.show();
     }
-
-
-
 }
