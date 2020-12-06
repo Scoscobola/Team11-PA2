@@ -65,7 +65,31 @@ public class Controller {
 
     //region ConnectToMsgApp
 
-    public void connectToApp(ActionEvent actionEvent) {
+    public void connectToApp(ActionEvent actionEvent) throws IOException{
+        String status = null;
+        String[] arguments = null;
+        if(txtUser.getText() != null && txtPass.getText() != null){
+            status = Main.client.loginUser(txtUser.getText(), txtPass.getText());
+            arguments = status.split("\\|");
+            if(Main.client.isLoggedIn()){
+               changeScene("ClientMenu");
+            }
+            else{
+                switch (arguments[0]){
+                    case "1":
+                    case "2":
+                    case "3":
+                        changeScene("ClientLogin");
+                        break;
+
+                }
+            }
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fill out all required fields");
+            alert.show();
+        }
+
     }
 
     //end region

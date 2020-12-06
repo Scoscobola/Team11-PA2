@@ -160,21 +160,21 @@ public class Client {
                     switch (arguments[0]) {
                         case "0":
                             displayMessage("Signed In successfully");
-                            result = "Signed In Successfully.";
+                            result = "0|S";
                             this.username = username;
                             this.isLoggedIn = true;
                             break;
                         case "1":
                             displayMessage("Invalid Credentials");
-                            result = "Invalid Credentials.";
+                            result = "1|I";
                             break;
                         case "2":
                             displayMessage("Already logged in.");
-                            result = "Already logged in.";
+                            result = "2|A";
                             break;
                         default:
                             displayMessage("1|ERR");
-                            result = "1|ERR";
+                            result = "3|E";
                     }
                 } else {
                     displayMessage("The client is not connected to a server!");
