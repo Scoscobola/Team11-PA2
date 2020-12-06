@@ -44,6 +44,7 @@ class Client:
     # region Methods
 
     def connect(self):
+        """Used to connect the client thread to the client worker thread."""
         # Connect to the server
         self.__client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__client_socket.connect((self.__ip, self.__port))
@@ -56,6 +57,7 @@ class Client:
         self.send_message(f"""PORT|{str(port)}""")
 
     def disconnect(self):
+        """Used to disconnect the client and server worker from the client worker and background client worker."""
         if self.__is_connected:
             self.send_message("OUT|OK")
             response = self.receive_message()
@@ -75,16 +77,19 @@ class Client:
             pass
 
     def send_message(self, msg: str):
+        """Used to send a message to the client worker."""
         msg += "\n"
         self.__client_socket.send(msg.encode("UTF-8"))
 
     def receive_message(self):
+        """Used to received a message from the client worker."""
         msg = self.__client_socket.recv(1024).decode("UTF-8")
         while "\n" not in msg:
             msg += self.__client_socket.recv(1024).decode("UTF-8")
         return msg.rstrip()
 
     def print_received(self):
+        """Prints the messages that the server worker has recieved from the background client worker."""
         if self.__server_worker.incoming_messages:
             for message in self.__server_worker.incoming_messages:
                 print(message + "\n")
@@ -92,6 +97,7 @@ class Client:
             print("No new messages.")
 
     def sign_in_user(self):
+        """Signs in a user to the client."""
         if self.__is_connected:
             sign_in_username = input("Username>")
             sign_in_password = input("Password>")
@@ -111,6 +117,7 @@ class Client:
             print("The client is not connected to a server!")
 
     def sign_up_user(self):
+        """Signs up a new user. Will ask for username, password, and phone number."""
         if self.__is_connected:
             sign_up_username = input("Input username>")
             sign_up_password = input("Input password>")
@@ -126,6 +133,7 @@ class Client:
             print("The client is not connected to a server!")
 
     def send_message_to_user(self):
+        """Sends a message from the user signed in, to another user. """
         if self.__is_connected and self.__is_logged_in:
             username_to_send = input("Enter the username you want to send the message to>")
             message = input("Your message>")
@@ -140,6 +148,7 @@ class Client:
                 print("The target user doesn't exist.")
 
     def display_menu(self):
+        """Used to display the options available to the client."""
         print("=" * 80)
         print(f"""{"Client Main Menu"}:^80""")
         print("=" * 80)

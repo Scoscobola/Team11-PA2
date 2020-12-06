@@ -62,13 +62,10 @@ class Database:
             self.__users.append(user_to_add)
             response = "0|OK"
 
-        print("List of users:")
-        for user in self.__users:
-            print(user)
         return response
 
     def send_message(self, name_from: str, name_to: str, message: str):
-        """Checks that the user the message is being sent to exists, then sends the message and returns a response."""
+        """Checks that both users exist, then constructs the message and puts it in the outgoing queue."""
         user_from_found = False
         user_to_found = False
         user_obj_from = None
@@ -102,8 +99,10 @@ class Database:
         return response
 
     def send_notification(self, user_from: User, user_to: User, message_id: str):
-        """Checks that the user the notification is being sent to exists,
-        then sends the message and returns a response."""
+        """This method is called when a background client worker takes a message from the databases outgoing
+        message queue. This method checks both users exist, and then constructs a message such that the
+        content of the message is the id of the message that was seen by the background client worker. It then
+        puts the new message in the outgoing notifications queue."""
         success = 0
         response = ''
         # check that the user that received the message exists

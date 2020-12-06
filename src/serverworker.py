@@ -34,20 +34,25 @@ class ServerWorker(Thread):
 
     # region Methods
     def send_message(self, msg: str):
+        """Used to send a string to the background clientworker thread."""
         self.display_message(f"""SEND>> {msg}""")
         msg += "\n"
         self.__client_socket.send(msg.encode("UTF-8"))
 
     def receive_message(self, max_length: int = 1024):
+        """Used to receive a string from the background clientworker thread."""
         msg = self.__client_socket.recv(max_length).decode("UTF-8")
         while "\n" not in msg:
             msg += self.__client_socket.recv(max_length).decode("UTF-8")
         return msg.rstrip()
 
     def display_message(self, msg: str):
+        """Displays a message."""
         print(f"""CLIENT (BG) >> {msg}""")
 
     def process_server_request(self):
+        """This method is called in the run method. It receives a message from the background client worker and
+        then processes the message accordingly."""
         server_message = self.receive_message()
         self.display_message(f"""SERVER SAID >>>{server_message}""")
 
@@ -72,6 +77,7 @@ class ServerWorker(Thread):
         self.send_message(response)
 
     def run(self):
+        """This is the method that's called when the thread starts."""
         self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__server_socket.bind(("localhost", self.__port))
         self.display_message("Listening for connections...")
@@ -85,6 +91,7 @@ class ServerWorker(Thread):
         self.__client_socket.close()
 
     def terminate_connection(self):
+        """Used to terminate the loop in the run method."""
         self.__keep_running = False
 
     # endregion

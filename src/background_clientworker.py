@@ -82,6 +82,8 @@ class BackgroundClientWorker(Thread):
     # region Methods
 
     def run(self):
+        """This method is called when the thread is started. It attempts a connection to the server worker and keeps
+        trying until it gets a connection. Then it checks the database queues for messages."""
         self.display_message("Connected to Client. Attempting connection to client background thread")
         while True:
             try:
@@ -100,10 +102,13 @@ class BackgroundClientWorker(Thread):
         self.__server_socket.close()
 
     def terminate_connection(self):
+        """Closes the connection to the server worker."""
         self.__keep_running_client = False
         self.send_message("OUT|OK")
 
     def check_for_messages(self):
+        """Checks the database for outgoing messages and notifications. If there are any meant for the user
+        currently signed in, it'll grab that message and send it off to the server worker."""
         if not list(self.__database.outgoing_messages.queue):
             # self.display_message("Outgoing Messages queue empty.")
             pass
@@ -125,6 +130,7 @@ class BackgroundClientWorker(Thread):
             self.display_message(self.receive_message())
 
     def receive_message(self, max_length: int = 1024):
+        """Receive a message from the server worker."""
         msg = self.__server_socket.recv(max_length).decode("UTF-8")
         while "\n" not in msg:
             msg += self.__client_socket.recv(max_length).decode("UTF-8")
@@ -132,11 +138,13 @@ class BackgroundClientWorker(Thread):
         return msg
 
     def send_message(self, msg: str):
+        """Send a message to the server worker."""
         msg += "\n"
         self.display_message(f"""SEND (BG)>> {msg}""")
         self.__server_socket.send(msg.encode("UTF-8"))
 
     def display_message(self, msg: str):
+        """Prints a message."""
         print(f"""BGCW >> {msg}""")
 
     # endregion

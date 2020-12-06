@@ -50,10 +50,13 @@ class Server(Thread):
     # region Methods
 
     def terminate_server(self):
+        """Turns off the loop in the run method and stops listening for connections."""
         self.__keep_running = False
         self.__server_socket.close()
 
     def run(self):
+        """The method that runs when the thread is started. It listens for connections and accepts them as they come in,
+        it starts a new client worker thread and adds it to a list."""
         self.__server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__server_socket.bind((self.__ip, self.__port))
         self.__server_socket.listen()
@@ -76,6 +79,7 @@ class Server(Thread):
             cw.join()
 
     def load_from_file(self):
+        """Asks for the name of a .json file and loads it as the database for the server."""
         filename = input("Enter the name of the file you'd like to load (no file extension)>")
         try:
             with open(f"{filename}.json", "r") as database_file:
@@ -115,6 +119,7 @@ class Server(Thread):
         self.__database = Database(users_list, messages_queue, notification_queue)
 
     def save_to_file(self):
+        """Saves the database in the server to a .json file."""
         database_dict = {"user_dict": [], "messages_dict": [], "notifications_dict": []}
         for user in self.__database.users:
             serialized_user = user.__dict__
@@ -136,6 +141,7 @@ class Server(Thread):
             print(e)
 
     def display_menu(self):
+        """Used to display the options available to the server app."""
         print("=" * 80)
         print(f"""{"Server Main Menu"}:^80""")
         print("=" * 80)
@@ -219,6 +225,8 @@ class ClientWorker(Thread):
     # region Methods
 
     def sign_in_user(self, username: str, password: str):
+        """Takes a username and password and checks that a user exists with the matching credentials. It also checks
+        that the user isn't signed in elsewhere."""
         user_to_sign_in = None
         response = ""
         user: User
@@ -254,18 +262,16 @@ class ClientWorker(Thread):
         pass
 
     def connect_to_client_background(self, port):
-        # print(f"""{str(self.__client_socket.getpeername()[0])}{port}""")
-        # self.__background_client_worker = BackgroundClientWorker(self.__client_socket, self.__database, self.__user,
-        # port)
+        """This method is called when the client-clientworker connection is established and the clientworker
+        receives a message with the port the server worker is listening on."""
         self.__background_client_worker.client_socket = self.__client_socket
         self.__background_client_worker.database = self.__database
         self.__background_client_worker.port = port
         self.__background_client_worker.start()
 
     def run(self):
+        """The method called when the thread is started. It continuously tried to process client requests."""
         self.display_message("Connected to Client. Attempting connection to client background thread")
-        for user in self.__database.users:
-            print(user)
         while self.__keep_running_client:
             self.process_client_request()
 
@@ -275,11 +281,14 @@ class ClientWorker(Thread):
                 self.__server.list_of_cw.remove(client)
 
     def terminate_connection(self):
+        """Called when the user disconnects. It tells the loop in the run method to stop, and then asks the
+        server worker to terminate."""
         self.__keep_running_client = False
         self.__background_client_worker.terminate_connection()
         return "0|OK"
 
     def process_client_request(self):
+        """Receive messages from the client, process them accordingly, and then send a response."""
         client_message = self.receive_message()
         self.display_message(f"""CLIENT SAID >> {client_message}""")
 
@@ -308,6 +317,7 @@ class ClientWorker(Thread):
         self.send_message(response)
 
     def receive_message(self, max_length: int = 1024):
+        """Receive a message from the client."""
         msg = self.__client_socket.recv(max_length).decode("UTF-8")
         while "\n" not in msg:
             msg += self.__client_socket.recv(max_length).decode("UTF-8")
@@ -315,11 +325,13 @@ class ClientWorker(Thread):
         return msg.rstrip()
 
     def send_message(self, msg: str):
+        """Send a response back to the client."""
         msg += "\n"
         self.display_message(f"""SEND>> {msg}""")
         self.__client_socket.send(msg.encode("UTF-8"))
 
     def display_message(self, msg: str):
+        """Prints a message out."""
         print(f"""CW >> {msg}""")
 
     # endregion
