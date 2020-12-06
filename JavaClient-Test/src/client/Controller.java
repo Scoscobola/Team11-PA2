@@ -51,7 +51,6 @@ public class Controller {
                 txtPort.clear();
                 txtIP.clear();
                 alert.show();
-
             }
         }
         else {

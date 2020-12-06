@@ -117,19 +117,6 @@ class Database:
 
         return response
 
-    def relay_message_to(self, user_from: User, message_id: int, message: str):
-        pass
-
-    def message_relayed(self, user_from: User, user_to: User, message_id: int):
-        pass
-
-    # We may not need these two methods. Just leave them until we know for sure.
-    def save_to_file(self, filename: str):
-        pass
-
-    def load_from_file(self, filename: str):
-        pass
-
     # endregion
 
 # endregion

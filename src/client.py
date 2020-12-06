@@ -68,10 +68,10 @@ class Client:
         self.__is_logged_in = False
 
     def send_message(self, msg: str):
-        self.__client_socket.send(msg.encode("UTF-16"))
+        self.__client_socket.send(msg.encode("UTF-8"))
 
     def receive_message(self):
-        return self.__client_socket.recv(1024).decode("UTF-16")
+        return self.__client_socket.recv(1024).decode("UTF-8")
 
     def print_received(self):
         if self.__server_worker.incoming_messages:

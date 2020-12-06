@@ -304,13 +304,13 @@ class ClientWorker(Thread):
         self.send_message(response)
 
     def receive_message(self, max_length: int = 1024):
-        msg = self.__client_socket.recv(max_length).decode("UTF-16")
+        msg = self.__client_socket.recv(max_length).decode("UTF-8")
         print(f"""RECV>> {msg}""")
         return msg
 
     def send_message(self, msg: str):
         self.display_message(f"""SEND>> {msg}""")
-        self.__client_socket.send(msg.encode("UTF-16"))
+        self.__client_socket.send(msg.encode("UTF-8"))
 
     def display_message(self, msg: str):
         print(f"""CW >> {msg}""")
