@@ -55,7 +55,7 @@ public class ServerWorker implements Runnable {
     }
 
     private void processServerRequest() throws IOException{
-        String serverMessage = this.inputStream.readLine();
+        String serverMessage = this.receiveMessage();
         displayMessage(String.format("Server said >>>%s", serverMessage));
 
         String[] arguments = serverMessage.split("\\|");
@@ -70,23 +70,38 @@ public class ServerWorker implements Runnable {
             case "OK":
                 response = "0|OK";
                 displayMessage(String.format("Message %s successfully received by %s", arguments[3], arguments[2]));
+                break;
             case "OUT":
                 this.terminateConnection();
+                break;
+            default:
+                response = "1|ERR";
         }
+        this.sendMessage(response);
+    }
+
+    private String receiveMessage() throws IOException{
+        byte[] bytes = new byte[1024];
+        this.inputStream.read(bytes);
+        String msg = new String (bytes, StandardCharsets.UTF_8);
+        msg = msg.replace("\n", "");
+        return msg;
+    }
+
+    private void sendMessage(String msg) throws IOException {
+        this.displayMessage(String.format("SEND>> %s", msg));
+        this.outputStream.writeBytes(msg + "\n");
+        this.outputStream.flush();
+    }
+
+    private void displayMessage(String msg){
+        System.out.printf("Client (BG) >> %s%n", msg);
     }
 
     private void terminateConnection() {
         this.keepRunningClient = false;
     }
 
-//    public void sendMessage(String msg){
-//        this.displayMessage("SEND (BG)>> " + msg);
-//        this.serverSocket
-//    }
-
-    public String displayMessage(String msg){
-        return "SW >> " + msg;
-    }
     //endregion
 
 

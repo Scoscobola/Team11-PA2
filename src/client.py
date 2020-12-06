@@ -120,7 +120,6 @@ class Client:
             arguments = response.split("|")
             if arguments[0] == "0":
                 print("User signed up successfully.")
-                self.__is_logged_in = True
             elif arguments[0] == "1":
                 print(f"{arguments[1]}")
         else:

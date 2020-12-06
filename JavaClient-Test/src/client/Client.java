@@ -84,63 +84,64 @@ public class Client {
         byte[] bytes = new byte[1024];
         this.inputStream.read(bytes);
         String srvResponse = new String(bytes, StandardCharsets.UTF_8);
+        srvResponse = srvResponse.replace("\n", "");
         displayMessage("SERVER >> " + srvResponse);
         return srvResponse;
     }
 
     public boolean loginUser (String username, String password)
     {
-        String request = String.format("LOG|%s|%s", username, password);
-        String response = null;
         boolean success = false;
-        try
-        {
-            if (isConnected) {
-                response = sendRequest(request);
-                String[] arguments = response.split("\\|");
+        if (isConnected) {
+            String request = String.format("LOG|%s|%s", username, password);
+            String response = null;
+            try {
+                if (isConnected) {
+                    response = sendRequest(request);
+                    String[] arguments = response.split("\\|");
 
-                if (arguments[0].equals("0")) {
-                    displayMessage("Signed In successfully");
-                    this.username = username;
-                } else if (arguments[0].equals("1")) {
-                    displayMessage("Invalid Credentials");
-                } else if (arguments[0].equals("2")) {
-                    displayMessage("Already logged in.");
+                    if (arguments[0].equals("0")) {
+                        displayMessage("Signed In successfully");
+                        this.username = username;
+                        success = true;
+                    } else if (arguments[0].equals("1")) {
+                        displayMessage("Invalid Credentials");
+                    } else if (arguments[0].equals("2")) {
+                        displayMessage("Already logged in.");
+                    }
+                } else {
+                    displayMessage("The client is not connected to a server!");
                 }
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
             }
-            else{
-                displayMessage("The client is not connected to a server!");
-            }
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
         }
         return success;
     }
 
-//    public boolean createNewUser (String displayName, String email, String password, boolean admin)
-//    {
-//        boolean success = false;
-//
-//        if (this.user.isAdmin())
-//        {
-//            Request request = new Request(String.format("CU|%s|%s|%s|%s", displayName, email, password, admin));
-//            String response = null;
-//
-//            try {
-//                response = (String) this.sendRequest(request);
-//            } catch (IOException | ClassNotFoundException ioe) {
-//                ioe.printStackTrace();
-//            }
-//
-//            if (response.contains("Success"))
-//                success = true;
-//            else
-//                success = false;
-//        }
-//        return success;
-//    }
+    public boolean createNewUser (String displayName, String password, int phone)
+    {
+        boolean success = false;
+        if (isConnected) {
+            String request = String.format("USR|%s|%s|%s", displayName, password, phone);
+            String response = null;
+            try {
+                response = this.sendRequest(request);
+                String[] arguments = response.split("\\|");
+                if (arguments[0].equals("0")) {
+                    this.displayMessage("User signed up successfully");
+                    success = true;
+                } else if (arguments[0].equals("1")) {
+                    this.displayMessage(arguments[1]);
+                }
+
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+
+        return success;
+    }
 
 //    public ArrayList<User> fetchUsers ()
 //    {
