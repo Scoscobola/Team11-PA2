@@ -35,6 +35,10 @@ class Client:
     def port(self, port: int):
         self.__port = port
 
+    @property
+    def username_of_user(self):
+        return self.__username_of_user
+
     # endregion
 
     # region Methods
@@ -119,7 +123,7 @@ class Client:
         if self.__is_connected and self.__is_logged_in:
             username_to_send = input("Enter the username you want to send the message to>")
             message = input("Your message>")
-            self.send_message(f"MSG|{self.__username_of_user}|{username_to_send}|{message}")
+            self.send_message(f"MSG|{self.username_of_user}|{username_to_send}|{message}")
             response = self.receive_message()
             arguments = response.split("|")
             if arguments[0] == "0":
