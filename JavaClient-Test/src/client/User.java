@@ -7,17 +7,16 @@ import java.util.ArrayList;
 public class User implements Serializable {
     //attributes
     private String displayName;
-    private String email;
+    private int phone;
     private String password;
     private boolean admin;
 
     //constructors
-    public User(String displayName, String email, String password, boolean admin)
+    public User(String displayName, String password, int phone)
     {
         this.displayName = displayName;
-        this.email = email;
         this.password = password;
-        this.admin = admin;
+        this.phone = phone;
     }
 
     //methods
@@ -29,11 +28,11 @@ public class User implements Serializable {
         this.displayName = displayName;
     }
 
-    public String getEmail() {
-        return email;
+    public int getPhone() {
+        return phone;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(int phone) {
+        this.phone = phone;
     }
 
     public void setPassword(String password) {
@@ -52,6 +51,6 @@ public class User implements Serializable {
     @Override
     public String toString()
     {
-        return String.format("DISPLAY NAME: %s, EMAIL: %s", this.displayName, this.email);
+        return String.format("DISPLAY NAME: %s, PHONE: %s", this.displayName, this.phone);
     }
 }

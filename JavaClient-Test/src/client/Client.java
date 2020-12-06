@@ -81,7 +81,9 @@ public class Client {
         this.outputStream.writeBytes(request + "\n");
         this.outputStream.flush();
         displayMessage("CLIENT >> " + request);
-        String srvResponse = this.inputStream.readUTF();
+        byte[] bytes = new byte[1024];
+        this.inputStream.read(bytes);
+        String srvResponse = new String(bytes, StandardCharsets.UTF_8);
         displayMessage("SERVER >> " + srvResponse);
         return srvResponse;
     }
