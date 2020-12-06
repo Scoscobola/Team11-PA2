@@ -59,6 +59,7 @@ public class Client {
             this.isConnected = true;
             this.outputStream = new DataOutputStream(serverConnection.getOutputStream());
             this.inputStream = new DataInputStream(serverConnection.getInputStream());
+            this.serverWorker.setPort(this.serverConnectionPort);
             ExecutorService executorService = Executors.newCachedThreadPool();
             executorService.execute(this.serverWorker);
             this.sendRequest(String.format("PORT|%s", this.serverConnectionPort));
@@ -77,7 +78,7 @@ public class Client {
 
 
     public String sendRequest (String request) throws IOException{
-        this.outputStream.writeBytes(request);
+        this.outputStream.writeBytes(request + "\n");
         this.outputStream.flush();
         displayMessage("CLIENT >> " + request);
         String srvResponse = this.inputStream.readUTF();

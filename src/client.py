@@ -56,26 +56,33 @@ class Client:
         self.send_message(f"""PORT|{str(port)}""")
 
     def disconnect(self):
-        self.send_message("OUT|OK")
-        response = self.receive_message()
-        arguments = response.split("|")
-        if arguments[0] == "0":
-            print(f"\n{arguments[0]}|{arguments[1]}")
-        elif arguments[0] == "1":
-            print(arguments[1])
-        try:
-            self.__client_socket.close()
-            # self.__server_worker.terminate_connection()
-        except socket.error as se:
-            print(f"0|{se}")
-        self.__is_connected = False
-        self.__is_logged_in = False
+        if self.__is_connected:
+            self.send_message("OUT|OK")
+            response = self.receive_message()
+            arguments = response.split("|")
+            if arguments[0] == "0":
+                print(f"\n{arguments[0]}|{arguments[1]}")
+            elif arguments[0] == "1":
+                print(arguments[1])
+            try:
+                self.__client_socket.close()
+                # self.__server_worker.terminate_connection()
+            except socket.error as se:
+                print(f"0|{se}")
+            self.__is_connected = False
+            self.__is_logged_in = False
+        else:
+            pass
 
     def send_message(self, msg: str):
+        msg += "\n"
         self.__client_socket.send(msg.encode("UTF-8"))
 
     def receive_message(self):
-        return self.__client_socket.recv(1024).decode("UTF-8")
+        msg = self.__client_socket.recv(1024).decode("UTF-8")
+        while "\n" not in msg:
+            msg += self.__client_socket.recv(1024).decode("UTF-8")
+        return msg.rstrip()
 
     def print_received(self):
         if self.__server_worker.incoming_messages:
@@ -143,7 +150,7 @@ class Client:
         print("4. Print Received Messages")
         print("5. Disconnect")
         print("-" * 80)
-        return int(input("Select option [1-5/9]>"))
+        return input("Select option [1-5]>")
 
     # endregion
 
@@ -158,24 +165,24 @@ if __name__ == "__main__":
 
     while keep_running:
         option = client.display_menu()
-        if option == 1:
+        if option == "1":
             client.ip = input("IP Address>")
             client.port = int(input("Port>"))
             client.connect()
             print(client.receive_message())
-        elif option == 2:
+        elif option == "2":
             print("1. Login existing user.")
             print("2. Sign up new user.")
-            login_option = int(input("Select option [1-2]>"))
-            if login_option == 1:
+            login_option = input("Select option [1-2]>")
+            if login_option == "1":
                 client.sign_in_user()
-            elif login_option == 2:
+            elif login_option == "2":
                 client.sign_up_user()
-        elif option == 3:
+        elif option == "3":
             client.send_message_to_user()
-        elif option == 4:
+        elif option == "4":
             client.print_received()
-        elif option == 5:
+        elif option == "5":
             client.disconnect()
             keep_running = False
         else:

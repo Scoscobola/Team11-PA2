@@ -3,6 +3,7 @@
 from user import User
 from message import Message
 import queue
+import threading
 
 class Database:
     """Stores the messages and users."""
@@ -24,6 +25,8 @@ class Database:
             self.__outgoing_notifications = queue.Queue()
         else:
             self.__outgoing_notifications = outgoing_notifications
+
+        self.__locks = {"outgoing_messages": threading.Lock(), "outgoing_notifications": threading.Lock()}
 
     # region Getters
 
@@ -91,7 +94,9 @@ class Database:
         # if both users exist, put this message into the outgoing message queue
         if user_to_found and user_from_found:
             message_to_send = Message(user_obj_from, user_obj_to, message)
+            self.__locks["outgoing_messages"].acquire()
             self.__outgoing_messages.put(message_to_send)
+            self.__locks["outgoing_messages"].release()
             response = f"""0|{message_to_send.id}"""
 
         return response
@@ -112,7 +117,9 @@ class Database:
         # if both exist, put notification in outgoing notification queue.
         if success == 0:
             message_to_send = Message(user_from, user_to, message_id)
+            self.__locks["outgoing_notifications"].acquire()
             self.__outgoing_notifications.put(message_to_send)
+            self.__locks["outgoing_notifications"].release()
             response = f"""{success}|Notification of relay sent to server."""
 
         return response

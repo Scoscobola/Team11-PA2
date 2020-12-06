@@ -309,10 +309,13 @@ class ClientWorker(Thread):
 
     def receive_message(self, max_length: int = 1024):
         msg = self.__client_socket.recv(max_length).decode("UTF-8")
+        while "\n" not in msg:
+            msg += self.__client_socket.recv(max_length).decode("UTF-8")
         print(f"""RECV>> {msg}""")
-        return msg
+        return msg.rstrip()
 
     def send_message(self, msg: str):
+        msg += "\n"
         self.display_message(f"""SEND>> {msg}""")
         self.__client_socket.send(msg.encode("UTF-8"))
 

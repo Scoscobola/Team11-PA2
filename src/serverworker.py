@@ -35,10 +35,14 @@ class ServerWorker(Thread):
     # region Methods
     def send_message(self, msg: str):
         self.display_message(f"""SEND>> {msg}""")
+        msg += "\n"
         self.__client_socket.send(msg.encode("UTF-8"))
 
     def receive_message(self, max_length: int = 1024):
-        return self.__client_socket.recv(max_length).decode("UTF-8")
+        msg = self.__client_socket.recv(max_length).decode("UTF-8")
+        while "\n" not in msg:
+            msg += self.__client_socket.recv(max_length).decode("UTF-8")
+        return msg.rstrip()
 
     def display_message(self, msg: str):
         print(f"""CLIENT (BG) >> {msg}""")
