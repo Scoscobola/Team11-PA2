@@ -239,15 +239,17 @@ public class Client {
     }
 
     public ArrayList<String> printReceived(){
+        ArrayList<String> temp = new ArrayList<>();
         if (!this.serverWorker.getIncomingMessages().isEmpty()){
             for (String s: this.serverWorker.getIncomingMessages()){
                 displayMessage(s);
             }
+            temp = (ArrayList<String>) this.serverWorker.getIncomingMessages().clone();
             this.serverWorker.getIncomingMessages().clear();
         }
         else {
             displayMessage("No new messages.");
         }
-        return this.serverWorker.getIncomingMessages();
+        return temp;
     }
 }

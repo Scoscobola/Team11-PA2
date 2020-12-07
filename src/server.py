@@ -94,7 +94,7 @@ class Server(Thread):
                         user_dict.get("_User__phone"))
             users_list.append(user)
 
-        messages_queue = queue.Queue
+        messages_queue = []
         for message_dict in database_dict["messages_dict"]:
             user_from_dict = message_dict["_Message__user_from"]
             user_to_dict = message_dict["_Message__user_to"]
@@ -103,9 +103,9 @@ class Server(Thread):
             user_to = User(user_to_dict.get("_User__username"), user_to_dict.get("_User__password"),
                            user_to_dict.get("_User__phone"))
             message_to_put = Message(user_from, user_to, message_dict.get("_Message__content"))
-            messages_queue.put(message_to_put)
+            messages_queue.append(message_to_put)
 
-        notification_queue = queue.Queue
+        notification_queue = []
         for notification_dict in database_dict["notifications_dict"]:
             user_from_dict = notification_dict["_Message__user_from"]
             user_to_dict = notification_dict["_Message__user_to"]
@@ -114,7 +114,7 @@ class Server(Thread):
             user_to = User(user_to_dict.get("_User__username"), user_to_dict.get("_User__password"),
                            user_to_dict.get("_User__phone"))
             message_to_put = Message(user_from, user_to, notification_dict.get("_Message__content"))
-            messages_queue.put(message_to_put)
+            messages_queue.append(message_to_put)
 
         self.__database = Database(users_list, messages_queue, notification_queue)
 
@@ -124,11 +124,11 @@ class Server(Thread):
         for user in self.__database.users:
             serialized_user = user.__dict__
             database_dict["user_dict"].append(serialized_user)
-        for message in list(self.__database.outgoing_messages.queue):
+        for message in self.__database.outgoing_messages:
             serialized_message = {"id": message.id, "user_to": {message.user_to.__dict__},
                                   "user_from": {message.user_from.__dict__}, "content": message.content}
             database_dict["messages_dict"].append(serialized_message)
-        for notification in list(self.__database.outgoing_notifications.queue):
+        for notification in self.__database.outgoing_notifications:
             serialized_notification = {"id": notification.id, "user_to": {notification.user_to.__dict__},
                                        "user_from": {notification.user_from.__dict__}, "content": notification.content}
             database_dict["messages_dict"].append(serialized_notification)

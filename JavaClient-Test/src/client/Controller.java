@@ -3,11 +3,13 @@ package client;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Controller {
     //region Controlls
@@ -139,8 +141,16 @@ public class Controller {
     public void loadViews(Event event){
         try {
             if (this.tabReceivedMessages.isSelected()) {
-                lstReceivedMsg.setItems(FXCollections.observableArrayList(Main.client.printReceived()));
-                lstReceivedMsg.refresh();
+                ArrayList<String> temp = Main.client.printReceived();
+                System.out.println("there should be something");
+                for (String s: temp)
+                    System.out.println(temp);
+                System.out.println("between this");
+                this.lstReceivedMsg.setItems(FXCollections.observableArrayList(temp));
+                ObservableList<String> temp2= lstReceivedMsg.getItems();
+                for (String s: temp2)
+                    System.out.println(s);
+                this.lstReceivedMsg.refresh();
             }
         }
         catch (NullPointerException ignored){
