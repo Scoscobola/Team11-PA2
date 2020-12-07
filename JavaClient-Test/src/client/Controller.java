@@ -18,6 +18,7 @@ public class Controller {
     public Button btnExit;
     public TextField txtUser;
     public TextField txtPass;
+    public Tab checkMtab;
     public ListView<String> taComment;
     public TextField tfComment;
     public TextField txtUsernameField;
@@ -136,13 +137,12 @@ public class Controller {
     }
 
     public void loadViews(Event event){
-        //if (this.some tab name.isSelected())
+        if (this.checkMtab.isSelected())
         {
             taComment.setItems(FXCollections.observableArrayList(Main.client.printReceived()));
             taComment.refresh();
         }
 
     }
-
     //end region
 }
