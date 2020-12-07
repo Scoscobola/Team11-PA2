@@ -1,0 +1,55 @@
+
+v
+java:S1104"TMake btnLogin a static final constant or non-public and provide accessors if needed.(’ÎöØùÿÿÿÿ8Ğ¸¥Öã.
+w
+java:S1104"ZMake lstReceivedMsg a static final constant or non-public and provide accessors if needed.(ãí„î8Ã†Úã.
+[
+java:S1128">Remove this unused import 'javafx.beans.value.ChangeListener'.(¸÷Í8öß©Ùã.
+]	java:S125h"<This block of commented-out lines of code should be removed.(¶†¼®ûÿÿÿÿ8ÊÏ¾Öã.
+M
+java:S1128"0Remove this unused import 'java.util.ArrayList'.(÷‰îƒ8‰ìûÛã.
+C	java:S131\""Add a default case to this switch.(óã¿ÿÿÿÿÿ8¢‡±Öã.
+ˆ
+java:S1130u"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(‹ÙçJ8 ¹Úã.
+w
+java:S1104"ZMake btnSendMessage a static final constant or non-public and provide accessors if needed.(ôË¢Ÿ8Ğ¸¥Öã.
+z
+java:S1192G"]Define a constant instead of duplicating this literal "Fill out all required fields" 3 times.(’Íˆ¨8Ğ¸¥Öã.
+y
+java:S1104"\Make txtUsernameField a static final constant or non-public and provide accessors if needed.(®±Î8Ğ¸¥Öã.
+|
+java:S1104"ZMake txtSentMessage a static final constant or non-public and provide accessors if needed.(£“¦Úûÿÿÿÿ8·ø…Úã.
+u
+java:S1104"SMake btnExit a static final constant or non-public and provide accessors if needed.(ñÿ¯©øÿÿÿÿ8Ğ¸¥Öã.
+p
+java:S1104"SMake txtPass a static final constant or non-public and provide accessors if needed.(Šß´8Ğ¸¥Öã.
+p
+java:S1104"SMake txtPort a static final constant or non-public and provide accessors if needed.(øœÚÃ8Ğ¸¥Öã.
+\
+java:S1128"?Remove this unused import 'javafx.beans.value.ObservableValue'.(´œ«Å8öß©Ùã.
+z
+java:S1104"XMake txtRecipName a static final constant or non-public and provide accessors if needed.(ÇÆÁ¨ıÿÿÿÿ8ëÕ…Úã.
+‰
+java:S1130&"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(÷ìÊª8Ğ¸¥Öã.
+
+java:S1104"_Make tabReceivedMessages a static final constant or non-public and provide accessors if needed.(ÃµÁŞøÿÿÿÿ8ÆÁ“Úã.
+N
+java:S1172u"2Remove this unused method parameter "actionEvent".(‹ÙçJ8Ğ¸¥Öã.
+u
+java:S1104"SMake txtUser a static final constant or non-public and provide accessors if needed.(ßÁæœıÿÿÿÿ8Ğ¸¥Öã.
+J
+java:S1172",Remove this unused method parameter "event".(€ƒ§8ÌÛ¼Ùã.
+s
+java:S1104"QMake txtIP a static final constant or non-public and provide accessors if needed.(”¬¸¡úÿÿÿÿ8Ğ¸¥Öã.
+O
+java:S11724"2Remove this unused method parameter "actionEvent".(¤çÇÛ8Ğ¸¥Öã.
+O
+java:S1172R"2Remove this unused method parameter "actionEvent".(¶Ó¥–8Ğ¸¥Öã.
+C	java:S131y""Add a default case to this switch.(óã¿ÿÿÿÿÿ8ÁÔÊÖã.
+s
+java:S1104"VMake btnConnect a static final constant or non-public and provide accessors if needed.(Ë¿È‰8Ğ¸¥Öã.
+T
+java:S1172*"2Remove this unused method parameter "actionEvent".(ëéİ…ıÿÿÿÿ8Ğ¸¥Öã.
+K	java:S108–")Either remove or fill this block of code.(ÀÕÓÙşÿÿÿÿ8¦ı¢Úã.
+‚
+java:S1104"`Make txtPortServerConnect a static final constant or non-public and provide accessors if needed.(ùï¾ üÿÿÿÿ8Ğ¸¥Öã.

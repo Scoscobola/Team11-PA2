@@ -1,0 +1,10 @@
+
+l
+java:S2674Z"JCheck the return value of the "read" call to see how many bytes were read.(ïè³÷üÿÿÿÿ8®ëŞÉã.
+Z	java:S106g"9Replace this use of System.out or System.err by a logger.(”˜ì‰øÿÿÿÿ8ÁéêÉã.
+’
+java:S1319#"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Ğ™ç‡şÿÿÿÿ8’§¤Ëã.
+T
+java:S25892"7Remove this expression which always evaluates to "true"(™øĞö8Ã—‡ªã.
+Z	java:S1064"9Replace this use of System.out or System.err by a logger.(µİê†øÿÿÿÿ8®ñ‹Ùã.
+Z	java:S1066"9Replace this use of System.out or System.err by a logger.(Å­Ëİúÿÿÿÿ8®ñ‹Ùã.

@@ -141,15 +141,9 @@ public class Controller {
     public void loadViews(Event event){
         try {
             if (this.tabReceivedMessages.isSelected()) {
-                ArrayList<String> temp = Main.client.printReceived();
-                System.out.println("there should be something");
-                for (String s: temp)
-                    System.out.println(temp);
-                System.out.println("between this");
-                this.lstReceivedMsg.setItems(FXCollections.observableArrayList(temp));
-                ObservableList<String> temp2= lstReceivedMsg.getItems();
-                for (String s: temp2)
-                    System.out.println(s);
+                ObservableList<String> observableList = FXCollections.observableArrayList();
+                observableList.setAll(Main.client.printReceived());
+                this.lstReceivedMsg.setItems(observableList);
                 this.lstReceivedMsg.refresh();
             }
         }
