@@ -50,7 +50,7 @@
                         <Image url="@Images/exit.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitMessenger" style="-fx-background-color: #14a2e2; -fx-text-fill: white; -fx-font-size: 1.2em;" text="Exit" translateX="22.0" translateY="9.0" />
+                  <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitApp" style="-fx-background-color: #14a2e2; -fx-text-fill: white; -fx-font-size: 1.2em;" text="Exit" translateX="22.0" translateY="9.0" />
                </children>
                <VBox.margin>
                   <Insets top="250.0" />
@@ -62,7 +62,7 @@
          <children>
             <TabPane prefHeight="657.0" prefWidth="650.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Send Messages">
+                <Tab onSelectionChanged="#loadViews" text="Send Messages">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -83,7 +83,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab text="Check Received Messages">
+                <Tab fx:id="tabReceivedMessages" onSelectionChanged="#loadViews" text="Check Received Messages">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>

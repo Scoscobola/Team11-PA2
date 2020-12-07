@@ -37,9 +37,14 @@ class Database:
     def outgoing_messages(self):
         return self.__outgoing_messages
 
+
     @property
     def outgoing_notifications(self):
         return self.__outgoing_notifications
+
+    @property
+    def locks(self):
+        return self.__locks
 
     # endregion
 

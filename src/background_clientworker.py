@@ -19,7 +19,6 @@ class BackgroundClientWorker(Thread):
         # self.__server = server
         self.__user = user
         self.__keep_running_client = True
-        self.__locks = {"outgoing_messages": threading.Lock(), "outgoing_notifications": threading.Lock()}
 
     # region Setters and Getters
     @property
@@ -110,7 +109,7 @@ class BackgroundClientWorker(Thread):
     def check_for_messages(self):
         """Checks the database for outgoing messages and notifications. If there are any meant for the user
         currently signed in, it'll grab that message and send it off to the server worker."""
-        self.__locks["outgoing_messages"].acquire()
+        self.__database.locks["outgoing_messages"].acquire()
         if not self.__database.outgoing_messages:
             # self.display_message("Outgoing Messages queue empty.")
             pass
@@ -122,9 +121,9 @@ class BackgroundClientWorker(Thread):
             self.display_message(self.receive_message())
             self.display_message(self.__database.send_notification(message_obj.user_from, message_obj.user_to,
                                                                    message_obj.id))
-        self.__locks["outgoing_messages"].release()
+        self.__database.locks["outgoing_messages"].release()
 
-        self.__locks["outgoing_notifications"].acquire()
+        self.__database.locks["outgoing_notifications"].acquire()
         if not self.__database.outgoing_notifications:
             # self.display_message("Outgoing notification queue empty")
             pass
@@ -134,7 +133,7 @@ class BackgroundClientWorker(Thread):
             message = f"""OK|{message_obj.user_from.username}|{message_obj.user_to.username}|{message_obj.content}"""
             self.send_message(message)
             self.display_message(self.receive_message())
-        self.__locks["outgoing_notifications"].release()
+        self.__database.locks["outgoing_notifications"].release()
 
     def receive_message(self, max_length: int = 1024):
         """Receive a message from the server worker."""

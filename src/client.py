@@ -92,6 +92,7 @@ class Client:
         if self.__server_worker.incoming_messages:
             for message in self.__server_worker.incoming_messages:
                 print(message + "\n")
+            del self.__server_worker.incoming_messages[:]
         else:
             print("No new messages.")
 
@@ -136,6 +137,9 @@ class Client:
         if self.__is_connected and self.__is_logged_in:
             username_to_send = input("Enter the username you want to send the message to>")
             message = input("Your message>")
+            if len(message) > 500:
+                print("That message is too long!")
+                return
             self.send_message(f"MSG|{self.username_of_user}|{username_to_send}|{message}")
             response = self.receive_message()
             arguments = response.split("|")

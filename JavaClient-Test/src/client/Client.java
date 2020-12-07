@@ -243,6 +243,7 @@ public class Client {
             for (String s: this.serverWorker.getIncomingMessages()){
                 displayMessage(s);
             }
+            this.serverWorker.getIncomingMessages().clear();
         }
         else {
             displayMessage("No new messages.");

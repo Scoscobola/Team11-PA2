@@ -18,17 +18,19 @@ public class Controller {
     public Button btnExit;
     public TextField txtUser;
     public TextField txtPass;
-    public ListView<String> taComment;
-    public TextField tfComment;
     public TextField txtUsernameField;
     public Button btnSendMessage;
     public Button btnLogin;
+    public TextField txtRecipName;
+    public TextField txtSentMessage;
+    public ListView<String> lstReceivedMsg;
+    public Tab tabReceivedMessages;
     //endregion
 
     //region General
 
     public void initialize(){
-        this.taComment = new ListView<>();
+        this.lstReceivedMsg = new ListView<>();
     }
 
     public void changeScene(String fxml) throws IOException {
@@ -111,9 +113,8 @@ public class Controller {
     }
 
     public void sendMessage(ActionEvent actionEvent)throws IOException{
-        if(txtUsernameField.getText() != null &&  tfComment.getText() != null){
-            String response = Main.client.sendMessageToUser(txtUsernameField.getText(),tfComment.getText());
-            taComment.getItems().add(String.format("%s: %s",txtUser.getText() , tfComment.getText()));
+        if(txtRecipName.getText() != null &&  txtSentMessage.getText() != null){
+            String response = Main.client.sendMessageToUser(txtUsernameField.getText(),txtSentMessage.getText());
             String[] arguments = response.split("\\|");
             switch (arguments[0]){
                 case "0":
@@ -125,7 +126,7 @@ public class Controller {
                     Alert error = new Alert(Alert.AlertType.ERROR, arguments[1]);
                     error.show();
                     txtUsernameField.clear();
-                    tfComment.clear();
+                    txtSentMessage.clear();
                     break;
             }
         }
@@ -136,10 +137,14 @@ public class Controller {
     }
 
     public void loadViews(Event event){
-        //if (this.some tab name.isSelected())
-        {
-            taComment.setItems(FXCollections.observableArrayList(Main.client.printReceived()));
-            taComment.refresh();
+        try {
+            if (this.tabReceivedMessages.isSelected()) {
+                lstReceivedMsg.setItems(FXCollections.observableArrayList(Main.client.printReceived()));
+                lstReceivedMsg.refresh();
+            }
+        }
+        catch (NullPointerException ignored){
+
         }
 
     }
