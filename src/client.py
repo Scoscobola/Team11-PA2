@@ -2,7 +2,6 @@
 
 from serverworker import ServerWorker
 import socket
-import random
 
 
 class Client:

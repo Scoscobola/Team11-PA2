@@ -3,7 +3,6 @@ import time
 from threading import Thread
 import socket
 from database import Database
-# from server import Server
 from user import User
 
 
