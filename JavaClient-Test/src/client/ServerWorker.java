@@ -49,6 +49,9 @@ public class ServerWorker implements Runnable {
 
             while (keepRunningClient = true) {
                 this.processServerRequest();
+                System.out.println("incoming messages");
+                for (String s: this.incomingMessages)
+                    System.out.println(s);
             }
         }
         catch(IOException ioe){

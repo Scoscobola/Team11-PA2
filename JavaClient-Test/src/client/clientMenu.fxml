@@ -13,6 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.ListView?>
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <children>
       <VBox prefWidth="150.0" style="-fx-background-color: #14a2e2;">
@@ -56,7 +57,7 @@
                         <Image url="@Images/exit.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitMessenger" style="-fx-background-color: #14a2e2; -fx-text-fill: white; -fx-font-size: 1.2em;" text="Exit" translateX="22.0" translateY="9.0" />
+                  <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitApp" style="-fx-background-color: #14a2e2; -fx-text-fill: white; -fx-font-size: 1.2em;" text="Exit" translateX="22.0" translateY="9.0" />
                </children>
                <VBox.margin>
                   <Insets top="250.0" />
@@ -78,7 +79,7 @@
                                  </font>
                               </Text>
                               <TextField fx:id="txtRecipientName" layoutX="117.0" layoutY="50.0" prefHeight="25.0" prefWidth="241.0" />
-                              <Button fx:id="btnConfirmRecipient" layoutX="363.0" layoutY="50.0" mnemonicParsing="false" onAction="#lockRecipient" prefHeight="25.0" prefWidth="138.0" text="Confirm Recipient" />
+                              <Button fx:id="btnConfirmRecipient" layoutX="363.0" layoutY="50.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="138.0" text="Confirm Recipient" />
                               <Label layoutY="54.0" text="Enter recipient name:" />
                            </children>
                         </AnchorPane>
@@ -86,7 +87,7 @@
                   </HBox>
                   <TextField fx:id="tfComment" layoutY="555.0" prefHeight="44.0" prefWidth="584.0" translateX="4.0" translateY="-2.0" />
                   <Button fx:id="btnSendMessage" layoutX="593.0" layoutY="565.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="44.0" prefWidth="57.0" style="-fx-background-color: #14a2e2;" text="Send" translateX="-3.0" translateY="-13.0" />
-                  <TextArea fx:id="taComment" layoutX="24.0" layoutY="78.0" prefHeight="456.0" prefWidth="601.0" translateX="1.0" />
+                  <ListView fx:id="taComment" layoutX="24.0" layoutY="78.0" prefHeight="456.0" prefWidth="601.0" translateX="1.0" />
                </children>
             </AnchorPane>
          </children>

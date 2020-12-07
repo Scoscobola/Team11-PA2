@@ -1,10 +1,10 @@
 package client;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class Controller {
     public Button btnExit;
     public TextField txtUser;
     public TextField txtPass;
-    public TextArea taComment;
+    public ListView<String> taComment;
     public TextField tfComment;
     public TextField txtUsernameField;
     public Button btnSendMessage;
@@ -27,7 +27,7 @@ public class Controller {
     //region General
 
     public void initialize(){
-        this.taComment.
+        this.taComment = new ListView<>();
     }
 
     public void changeScene(String fxml) throws IOException {
@@ -112,7 +112,7 @@ public class Controller {
     public void sendMessage(ActionEvent actionEvent)throws IOException{
         if(txtUsernameField.getText() != null &&  tfComment.getText() != null){
             String response = Main.client.sendMessageToUser(txtUsernameField.getText(),tfComment.getText());
-            taComment.appendText(String.format("%s: %s",txtUser.getText() , tfComment.getText()));
+            taComment.getItems().add(String.format("%s: %s",txtUser.getText() , tfComment.getText()));
             String[] arguments = response.split("\\|");
             switch (arguments[0]){
                 case "0":
