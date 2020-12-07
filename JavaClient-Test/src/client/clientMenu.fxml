@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <children>
       <VBox prefWidth="150.0" style="-fx-background-color: #14a2e2;">
          <children>
@@ -23,7 +24,7 @@
                <children>
                   <ImageView fitHeight="76.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" translateX="5.0">
                      <image>
-                        <Image url="@../../Images/Leopol.jpeg" />
+                        <Image url="@Images/Leopol.jpeg" />
                      </image>
                   </ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: white; -fx-font-size: 1.8em;" text="Leopol" translateX="10.0" translateY="20.0" />
@@ -36,7 +37,7 @@
                <children>
                   <ImageView fitHeight="65.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true" translateX="5.0">
                      <image>
-                        <Image url="@../../Images/msg.png" />
+                        <Image url="@Images/msg.png" />
                      </image>
                   </ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: white; -fx-font-size: 1.2em;" text="Messenger" translateX="10.0" translateY="15.0" />
@@ -52,10 +53,10 @@
                <children>
                   <ImageView fitHeight="51.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true" translateX="10.0">
                      <image>
-                        <Image url="@../../Images/exit.png" />
+                        <Image url="@Images/exit.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitApp" style="-fx-background-color: #14a2e2; -fx-text-fill: white; -fx-font-size: 1.2em;" text="Exit" translateX="22.0" translateY="9.0" />
+                  <Button fx:id="btnExit" mnemonicParsing="false" onAction="#exitMessenger" style="-fx-background-color: #14a2e2; -fx-text-fill: white; -fx-font-size: 1.2em;" text="Exit" translateX="22.0" translateY="9.0" />
                </children>
                <VBox.margin>
                   <Insets top="250.0" />
@@ -71,12 +72,14 @@
                      <children>
                         <AnchorPane prefHeight="616.0" prefWidth="650.0">
                            <children>
-                              <Text fill="#3a82e8" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter recipient name...." translateX="10.0" translateY="10.0">
+                              <Text fill="#3a82e8" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Your Message" translateX="10.0" translateY="10.0">
                                  <font>
                                     <Font name="System Bold" size="23.0" />
                                  </font>
                               </Text>
-                              <TextField fx:id="txtUsernameField" layoutX="23.0" layoutY="50.0" prefHeight="25.0" prefWidth="214.0" promptText="User to message" />
+                              <TextField fx:id="txtRecipientName" layoutX="117.0" layoutY="50.0" prefHeight="25.0" prefWidth="241.0" />
+                              <Button fx:id="btnConfirmRecipient" layoutX="363.0" layoutY="50.0" mnemonicParsing="false" onAction="#lockRecipient" prefHeight="25.0" prefWidth="138.0" text="Confirm Recipient" />
+                              <Label layoutY="54.0" text="Enter recipient name:" />
                            </children>
                         </AnchorPane>
                      </children>
