@@ -16,6 +16,9 @@ public class Controller {
     public Button btnExit;
     public TextField txtUser;
     public TextField txtPass;
+    public TextField tfComment;
+    public TextField txtUsernameField;
+    public Button btnSendMessage;
     public Button btnLogin;
     //endregion
 
@@ -92,5 +95,14 @@ public class Controller {
 
     }
 
+    public void sendMessage(ActionEvent actionEvent)throws IOException{
+        if(txtUsernameField.getText() != null &&  tfComment.getText() != null){
+            Main.client.sendMessageToUser(txtUsernameField.getText(),tfComment.getText());
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Fill out all required fields");
+            alert.show();
+        }
+    }
     //end region
 }
