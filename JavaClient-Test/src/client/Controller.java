@@ -3,6 +3,7 @@ package client;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class Controller {
     public Button btnExit;
     public TextField txtUser;
     public TextField txtPass;
+    public TextArea taComment;
     public TextField tfComment;
     public TextField txtUsernameField;
     public Button btnSendMessage;
@@ -98,11 +100,13 @@ public class Controller {
     public void sendMessage(ActionEvent actionEvent)throws IOException{
         if(txtUsernameField.getText() != null &&  tfComment.getText() != null){
             Main.client.sendMessageToUser(txtUsernameField.getText(),tfComment.getText());
+            taComment.appendText(String.format("%s: %s",txtUser.getText() , tfComment.getText()));
         }
         else{
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fill out all required fields");
             alert.show();
         }
     }
+
     //end region
 }
