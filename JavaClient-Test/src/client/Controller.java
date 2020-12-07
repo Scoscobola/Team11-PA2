@@ -26,6 +26,10 @@ public class Controller {
 
     //region General
 
+    public void initialize(){
+        this.taComment.
+    }
+
     public void changeScene(String fxml) throws IOException {
         Main.screenController.activate(fxml);
     }

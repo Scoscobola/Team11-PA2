@@ -2,7 +2,6 @@
 
 from user import User
 from message import Message
-import queue
 import threading
 
 class Database:
@@ -17,12 +16,12 @@ class Database:
             self.__users = users
 
         if outgoing_messages is None:
-            self.__outgoing_messages = queue.Queue()
+            self.__outgoing_messages = []
         else:
             self.__outgoing_messages = outgoing_messages
 
         if outgoing_notifications is None:
-            self.__outgoing_notifications = queue.Queue()
+            self.__outgoing_notifications = []
         else:
             self.__outgoing_notifications = outgoing_notifications
 
@@ -92,7 +91,7 @@ class Database:
         if user_to_found and user_from_found:
             message_to_send = Message(user_obj_from, user_obj_to, message)
             self.__locks["outgoing_messages"].acquire()
-            self.__outgoing_messages.put(message_to_send)
+            self.__outgoing_messages.insert(0, message_to_send)
             self.__locks["outgoing_messages"].release()
             response = f"""0|{message_to_send.id}"""
 
@@ -117,7 +116,7 @@ class Database:
         if success == 0:
             message_to_send = Message(user_from, user_to, message_id)
             self.__locks["outgoing_notifications"].acquire()
-            self.__outgoing_notifications.put(message_to_send)
+            self.__outgoing_notifications.insert(0, message_to_send)
             self.__locks["outgoing_notifications"].release()
             response = f"""{success}|Notification of relay sent to server."""
 
