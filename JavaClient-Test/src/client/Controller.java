@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.control.*;
 
 import java.io.IOException;
@@ -132,6 +133,15 @@ public class Controller {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fill out all required fields");
             alert.show();
         }
+    }
+
+    public void loadViews(Event event){
+        //if (this.some tab name.isSelected())
+        {
+            taComment.setItems(FXCollections.observableArrayList(Main.client.printReceived()));
+            taComment.refresh();
+        }
+
     }
 
     //end region
