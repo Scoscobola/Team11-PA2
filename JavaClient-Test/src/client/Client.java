@@ -160,21 +160,21 @@ public class Client {
                     switch (arguments[0]) {
                         case "0":
                             displayMessage("Signed In successfully");
-                            result = "0|S";
+                            result = "Signed in successfully";
                             this.username = username;
                             this.isLoggedIn = true;
                             break;
                         case "1":
                             displayMessage("Invalid Credentials");
-                            result = "1|I";
+                            result = "Invalid credentials.";
                             break;
                         case "2":
                             displayMessage("Already logged in.");
-                            result = "2|A";
+                            result = "Already logged in.";
                             break;
                         default:
                             displayMessage("1|ERR");
-                            result = "3|E";
+                            result = "1|ERR";
                     }
                 } else {
                     displayMessage("The client is not connected to a server!");
@@ -219,15 +219,15 @@ public class Client {
 
                 switch (arguments[0]) {
                     case "0":
-                        result = String.format("Message %s sent successfully.", arguments[1]);
+                        result = String.format("0|Message %s sent successfully.", arguments[1]);
                         this.displayMessage(result);
                         break;
                     case "1":
-                        result = "The user sending the message doesn't exist or is not the current user logged in.";
+                        result = "1|The user sending the message doesn't exist or is not the current user logged in.";
                         this.displayMessage(result);
                         break;
                     case "2":
-                        result = "The target user doesn't exist.";
+                        result = "2|The target user doesn't exist.";
                         this.displayMessage(result);
                         break;
                 }

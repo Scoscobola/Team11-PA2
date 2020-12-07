@@ -81,10 +81,18 @@ public class Controller {
             }
             else{
                 switch (arguments[0]){
+                    case "0":
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, arguments[1]);
+                        alert.show();
+                        break;
                     case "1":
                     case "2":
                     case "3":
-                        changeScene("ClientLogin");
+                        Alert error = new Alert(Alert.AlertType.ERROR, arguments[1]);
+                        error.show();
+                        txtUser.clear();
+                        txtPass.clear();
+                        //changeScene("ClientLogin");
                         break;
 
                 }
@@ -99,8 +107,22 @@ public class Controller {
 
     public void sendMessage(ActionEvent actionEvent)throws IOException{
         if(txtUsernameField.getText() != null &&  tfComment.getText() != null){
-            Main.client.sendMessageToUser(txtUsernameField.getText(),tfComment.getText());
+            String response = Main.client.sendMessageToUser(txtUsernameField.getText(),tfComment.getText());
             taComment.appendText(String.format("%s: %s",txtUser.getText() , tfComment.getText()));
+            String[] arguments = response.split("\\|");
+            switch (arguments[0]){
+                case "0":
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, arguments[1]);
+                    alert.show();
+                    break;
+                case "1":
+                case "2":
+                    Alert error = new Alert(Alert.AlertType.ERROR, arguments[1]);
+                    error.show();
+                    txtUsernameField.clear();
+                    tfComment.clear();
+                    break;
+            }
         }
         else{
             Alert alert = new Alert(Alert.AlertType.ERROR, "Fill out all required fields");
